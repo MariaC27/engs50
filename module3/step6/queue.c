@@ -1,5 +1,5 @@
 /* queue.c --- implements the interface queue.h
-0;10;1c * 
+ * 
  * 
  * Author: Justin Sapun
  * Created: Wed Jan 26 
@@ -27,7 +27,7 @@ struct queue_t {
 
 /* create an empty queue */
 queue_t* qopen(void) { // Open Queue without nodes
-	struct queue_t* tmp = malloc(sizeof(Node_t));
+	struct queue_t* tmp = (struct queue_t*)malloc(sizeof(struct queue_t));
 	tmp->front = NULL;
 	tmp->back = NULL;
 	return tmp;
@@ -37,11 +37,11 @@ queue_t* qopen(void) { // Open Queue without nodes
 void qclose(queue_t *qp) { // deallocate queue
 	struct queue_t* q = qp;
 
-	for (Node_t* current=q->front; current!=NULL;){
+	/*for (Node_t* current=q->front; current!=NULL;){
 		Node_t* tmp = current->next;
 		free(current);
 		current = tmp;
-	}
+	}*/
 	free(q);
 }
 
@@ -69,15 +69,16 @@ int32_t qput(queue_t *qp, void *elementp){
 /* get the first element from queue, removing it from the queue*/
 void* qget(queue_t *qp){
 	struct queue_t *q = qp;
-	//Node_t* tmp = q->front; // to free memory
 
 	if (q->front == NULL) // if empty queue
 		return NULL;
 
-	void* elem = q->front->data;
+	Node_t* tmp = q->front;
+	void* elem = tmp->data;
 
 	q->front = q->front->next;
-	//free(tmp);
+
+	free(tmp);
 
 	return elem;
 }
@@ -122,11 +123,8 @@ void qconcat(queue_t *q1p, queue_t *q2p){
 	struct queue_t *q1 = q1p;
 	struct queue_t *q2 = q2p;
 
-	Node_t* tmp = qget(q2);
-	void* tmp_data = tmp->data;
-	qput(q1, tmp_data);
-
-
-
-
+	for (Node_t* current=q2->front; current!=NULL;current=current->next){
+		qput(q1, qget(q2));
+	}
+	free(q2);
 }

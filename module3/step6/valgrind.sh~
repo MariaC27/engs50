@@ -1,10 +1,9 @@
 #!/bin/bash
 
 files=(
-		#gettest
-		#puttest
-		applytest
-		#removetest
+		concat_test
+#		test_queue1
+#		test_queue2
 )
 
 echo "the files list is: ${files[*]}"

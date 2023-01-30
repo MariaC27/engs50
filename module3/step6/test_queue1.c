@@ -1,5 +1,5 @@
 /* test_queue1.c --- 
-0;10;1c0;10;1c * 
+ * 
  * 
  * Author: Justin Sapun
  * Created: Thursday Jan 27
@@ -31,37 +31,31 @@ person_t* make_person(char* name, int age, double rate){
 int main(void){	
 
 	person_t *pp;
-	person_t *pp_res;
 	struct queue_t *qp;
 
 	qp = qopen();
 
 	pp = make_person("Fred",20,4.6);
 
-	printf("\nBefore qget: \n");
-	printf("%s's age: %i\n",pp->name,pp->age);
-	printf("%s's rate: %f\n",pp->name,pp->rate);
-
 	int32_t res = qput(qp, (void *)pp);
 
-	pp_res = (person_t *)qget(qp);
+	if (res) {
+		printf("Fail: did not successfully qput\n");
+		return 1;
+	}
 
-	//printf("pp pointer: %p\n",(void *)pp);
-	//printf("pp_res pointer: %p\n",(void *)pp_res);
+	void* pp_res = qget(qp);
 
-	printf("\nAfter qget: \n");
-	printf("%s's age: %i\n",pp_res->name,pp_res->age);
-	printf("%s's rate: %f\n",pp_res->name,pp_res->rate);
+	if ((void *)pp != (void *)pp_res){
+		printf("Fail: did not qget successfully\n");
+		return 1;
+	}
 
-	free(pp);
 	free(pp_res);
-	
-	
+	free(pp);	
 	
 	qclose(qp);
 
-	if (res)
-		return 1;
 	return 0;
 
 }
