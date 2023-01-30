@@ -7,6 +7,7 @@
  * 
  * Description: implements the interface list.h 
  * Justin - added line 25, need to transfer next pointer as well 01/23/2023
+ * Justin - added line 67, need to convert pointer to car object 01/24/2023
  */
 
 #include "list.h"
@@ -60,15 +61,18 @@ void lapply(void (*fn)(car_t *cp)){ // apply a function to every car in the list
 
 car_t *lremove(char *platep){ //find, remove, and return car with matching plate
 	car_t *p, *f;
-	car_t *temp;
+	car_t *temp = NULL;
 
 	for (p=front; p!=NULL; p=p->next){
-		if (strcmp(p->plate, platep)==0){ // to do - check syntax
+		car_t node = *p;
+		if (strcmp(node.plate, platep)==0){ // to do - check syntax
 			f->next = p->next;
 			temp = p;
+			return temp; // pretty sure this is needed
 		}
 		f=p;
 	}
-
 	return temp;
+
+	
 }

@@ -1,6 +1,6 @@
 CFLAGS = -Wall -pedantic -std=c17 -I. -g
 
-all: list puttest gettest
+all: list puttest gettest removetest
 
 list: list.c
 	gcc ${CFLAGS} list.c -c
@@ -18,5 +18,5 @@ removetest: removetest.c
 	gcc list.o removetest.o -o removetest
 
 clean:
-	rm -f *.o puttest gettest
+	rm -f *.o puttest.exe
 
