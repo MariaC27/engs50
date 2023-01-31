@@ -1,9 +1,11 @@
 #!/bin/bash
 
 files=(
-#		concat_test
-#		test_queue1
-		test_queue2
+		qputgettest
+		qclosetest
+		qapplytest
+		qsearchtest
+		qconcattest
 )
 
 echo "the files list is: ${files[*]}"

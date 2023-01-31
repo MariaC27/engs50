@@ -1,19 +1,26 @@
 CFLAGS = -Wall -pedantic -std=c17 -I. -g
 
-all: queue test_queue1 test_queue2 concat_test
+all: queue qputgettest qclosetest qapplytest qsearchtest qconcattest
 
 queue: queue.c
 	gcc ${CFLAGS} queue.c -c
-test_queue1: test_queue1.c
-	gcc ${CFLAGS} test_queue1.c -c 
-	gcc queue.o test_queue1.o -o test_queue1
-test_queue2: test_queue2.c
-	gcc ${CFLAGS} test_queue2.c -c 
-	gcc queue.o test_queue2.o -o test_queue2
-concat_test: concat_test.c
-	gcc ${CFLAGS} concat_test.c -c 
-	gcc queue.o concat_test.o -o concat_test
+qputgettest: qputgettest.c
+	gcc ${CFLAGS} qputgettest.c -c 
+	gcc queue.o qputgettest.o -o qputgettest
+qclosetest: qclosetest.c
+	gcc ${CFLAGS} qclosetest.c -c 
+	gcc queue.o qclosetest.o -o qclosetest
+qapplytest: qapplytest.c
+	gcc ${CFLAGS} qapplytest.c -c 
+	gcc queue.o qapplytest.o -o qapplytest
+qsearchtest: qsearchtest.c
+	gcc ${CFLAGS} qsearchtest.c -c 
+	gcc queue.o qsearchtest.o -o qsearchtest
+qconcattest: qconcattest.c
+	gcc ${CFLAGS} qconcattest.c -c 
+	gcc queue.o qconcattest.o -o qconcattest
+
 
 clean:
-	rm -f *.o test_queue1 test_queue2
-
+	rm -f *.o qputgettest qclosetest qapplytest qsearchtest qconcattest 
+	#rm -f valgrind_qputgettest.txt valgrind_qclosetest.txt valgrind_qapplytest.txt valgrind_qsearchtest.txt valgrind_qconcattest.txt
