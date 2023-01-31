@@ -71,6 +71,12 @@ int main(void){
 		printf("function not applied corectly\n");
 
 
+	free(car1);
+	free(car2);
+	free(car3);
+	free(car4);
+	free(car5);
+
 	return returncode;
 
 	/*printf("%f : %f\n\n", price1, car1.price);

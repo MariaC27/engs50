@@ -2,21 +2,22 @@
 #		gcc $(CFLAGS) -c $<
 CFLAGS = -Wall -pedantic -std=c17 -I. -g
 
-all: queue hash test_hash1 test_hash2
+all:		hash test1_hash test2_hash test3_hash
 
-queue:	queue.c
-				gcc ${CFLAGS} queue.c -c
-hash:		hash.c queue.c
+hash:		hash.c
 				gcc ${CFLAGS} hash.c -c
 
-test_hash1:	test_hash1.c
-						gcc ${CFLAGS} test_hash1.c -c
-						gcc hash.o test_hash1.o -o test_hash1
-test_hash2: test_hash2.c
-						gcc ${CFLAGS} test_hash2.c -c
-						gcc hash.o test_hash2.o -o test_hash2
+test1_hash:				test1_hash.c
+									gcc ${CFLAGS} test1_hash.c -c
+									gcc hash.o test1_hash.o -o test1_hash
 
+test2_hash: 			test2_hash.c
+									gcc ${CFLAGS} test2_hash.c -c
+									gcc hash.o test2_hash.o -o test2_hash
 
-clean:
-	rm -f *.o test_hash1 test_hash2
+test3_hash: 			test3_hash.c
+									gcc ${CFLAGS} test3_hash.c -c
+									gcc hash.o test3_hash.o -o test3_hash
+
+clean:						rm -f *.o test1_hash.c test2_hash.c test3_hash.c
 

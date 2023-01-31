@@ -95,7 +95,7 @@ void hclose(hashtable_t *htp){
 //put node ep into hashtable pointed to by htp with key key and key length keylen
 int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen){
 	struct hashtable_t* h = htp;
-	uint32_t table_position = SuperFastHash(key, keylen, h->size);//how to call this function? what is const char *data?
+	uint32_t table_position = SuperFastHash(key, keylen, h->size);
 	qput(h->table[table_position], (struct Node *)ep);
 	return 0;
 }
@@ -121,53 +121,18 @@ void *hsearch(hashtable_t *htp,
 							int32_t keylen){
 	struct hashtable_t* h = htp;
 
-	for(int i = 0; i < MAXTABLESIZE; i++){
-		void *el = qsearch(h->table[i], searchfn, key);
-		if(el !=NULL)
-			return el;
-	}
-	return NULL;
+	uint32_t table_position = SuperFastHash(key, keylen, h->size);
+	void *n = qsearch(h->table[table_position], searchfn, key);
+	return n;
 }
 
+void *hremove(hashtable_t *htp,
+        bool (*searchfn)(void* elementp, const void* searchkeyp),
+        const char *key,
+							int32_t keylen){
+	struct hashtable_t* h = htp;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	uint32_t table_position = SuperFastHash(key, keylen, h->size);
+  void *n = qremove(h->table[table_position], searchfn, key);
+  return n;
+}

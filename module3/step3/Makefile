@@ -1,32 +1,23 @@
-CFLAGS=-Wall -pedantic -std=c17 -I. -g
+CFLAGS = -Wall -pedantic -std=c17 -I. -g
 
-all:			puttest gettest removetest applytest
+all: list puttest gettest applytest removetest 
 
-list.o:		list.c list.h
-					gcc ${CFLAGS} list.c -c
+list: list.c
+	gcc ${CFLAGS} list.c -c
+puttest: puttest.c
+	gcc ${CFLAGS} puttest.c -c 
+	gcc list.o puttest.o -o puttest
+gettest: gettest.c
+	gcc ${CFLAGS} gettest.c -c 
+	gcc list.o gettest.o -o gettest
+applytest: applytest.c
+	gcc ${CFLAGS} applytest.c -c 
+	gcc list.o applytest.o -o applytest
+removetest: removetest.c
+	gcc ${CFLAGS} removetest.c -c 
+	gcc list.o removetest.o -o removetest
 
-puttest:	list.o puttest.c
-					gcc ${CFLAGS} puttest.c -c 
-					gcc ${CFLAGS} list.o puttest.o -o puttest
-
-gettest:	list.o gettest.c
-					gcc ${CFLAGS} gettest.c -c 
-					gcc ${CFLAGS} list.o gettest.o -o gettest
-
-applytest:	list.o applytest.c
-						gcc ${CFLAGS} applytest.c -c 
-						gcc ${CFLAGS} list.o applytest.o -o applytest
-
-removetest: list.o removetest.c
-						gcc ${CFLAGS} removetest.c -c 
-						gcc ${CFLAGS} list.o removetest.o -o removetest
-
-run:
-						./puttest
-						./gettest
-						./removetest
-						./applytest
 
 clean:
-						rm -f *.o puttest gettest applytest removetest
-
+	rm -f *.o puttest gettest applytest removetest  
+	rm -f valgrind_puttest.txt valgrind_gettest.txt valgrind_applytest.txt valgrind_removetest.txt
