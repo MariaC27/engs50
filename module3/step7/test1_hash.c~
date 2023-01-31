@@ -47,7 +47,7 @@ int main(void){
 	}
 
 
-	// TO DO: edit to incorporate search function
+	// TO DO: move to search test file
 	void* remove_res = hremove(h1, (void*)sparky);
 	if (remove_res == NULL){
 		printf("Fail: did not hremove successfully\n");

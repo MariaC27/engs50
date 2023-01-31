@@ -134,20 +134,9 @@ q2 is dealocated, closed, and unusable upon completion */
 void qconcat(queue_t *q1p, queue_t *q2p){
 	struct queue_t *q1 = q1p;
 	struct queue_t *q2 = q2p;
-	if ((q1->front == NULL) && (q2->front == NULL)){ // concat two empties
-		free(q2);
-	}
-	else if (q1->front == NULL){ // concat ... to empty
-		q1->front = q2->front;
-		q1->back = q2->back;
-		free(q2);
-	}
-	else if (q2->front == NULL){ // concat empty to ...
-		free(q2);
-	}
-	else{
-		q1->back->next = q2->front;
-		q1->back = q2->back;
-		free(q2);
-	}
+
+	q1->back->next = q2->front;
+	q1->back = q2->back;
+
+	free(q2);
 }

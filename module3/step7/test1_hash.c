@@ -19,15 +19,23 @@ typedef struct dog{
 	char *name;
 	char *breed;
 	int gender; //0 for female, 1 for male
-}dog_t;
+}dog_t;//HASHKEY = name
 
 dog_t *make_dog(double age, char* name, char* breed, int gender){
 	dog_t* tmp = malloc(sizeof(dog_t));
 	tmp->age = age;
-	strcpy(tmp->name, name);
-	strcpy(tmp->breed, breed);
+	strcpy(name,   tmp->name);
+	strcpy(breed, tmp->breed);
 	tmp->gender = gender;
 	return tmp;
+}
+
+bool search_queue(void* data, const void* keyp){
+  dog_t* dog = data;
+
+  if (!strcmp(dog->name, keyp))
+    return true; // if equal
+  return false; // if not equal
 }
 
 
@@ -46,12 +54,10 @@ int main(void){
 		hput(h1, (void*)rose, rose->name, strlen(rose->name));
 	}
 
-
-	// TO DO: move to search test file
-	void* remove_res = hremove(h1, (void*)sparky);
+	void* remove_res = hremove(h1, search_queue, sparky->name, strlen(sparky->name));
 	if (remove_res == NULL){
 		printf("Fail: did not hremove successfully\n");
-		return 1
+		return 1;
 	}
 
 	hclose(h1);
