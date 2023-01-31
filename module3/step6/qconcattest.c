@@ -1,6 +1,6 @@
 
 
-/* concat_test.c --- 
+/* qconcattest.c --- 
  * Author: Justin Sapun
  * Created: Monday Jan 30
  * Version: 
@@ -75,7 +75,7 @@ int main(void){
 	int res6 = qput(qp_2, (void *)three_b);
 	
 	if ((res1+res2+res3+res4+res5+res6) !=0){
-		printf("Fail: did not successfully qput\n");
+		printf("Fail: did not qput successfully\n");
 		return 1;
 	}
 
@@ -95,30 +95,22 @@ int main(void){
 
 	if (((void *)one_p != one_res) || ((void *)two_p != two_res) || ((void *)three_p != three_res)) {
 		return 1;
-		printf("Fail: did npt properly concat\n");
+		printf("Fail: did not properly concat\n");
 	}
-	if (((void *)one_b != one_b_res) || ((void *)two_b != two_b_res) || ((void *)three_b != three_b_res)) {
+
+	if (((void *)one_b != one_b_res) || ((void *)two_b != two_b_res) || ((void *)three_b != three_b_res)) { // fails here
 		return 1;
 		printf("Fail: did not properly concat\n");
 	}
-	
-	qclose(qp_1);	
 
-	free(one_p);
+	free(one_p); // free local structs
 	free(two_p);
 	free(three_p);
 	free(one_b);
 	free(two_b);
 	free(three_b);
 
-	free(one_res);
-	free(two_res);
-	free(three_res);
-	free(one_b_res);
-	free(two_b_res);
-	free(three_b_res);
-
+	qclose(qp_1); // close and deallocate queue
 
 	return 0;
-
 }

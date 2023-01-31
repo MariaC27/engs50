@@ -1,46 +1,61 @@
-/* qopentest.c --- test for queue module
+
+/* qputgettest.c --- 
+ *
+ * Author: Justin Sapun
+ * Created: Thursday Jan 27
+ * Version: 
  * 
- * 
- * Author: Maria H. Cristoforo
- * Created: Thu Jan 26 10:48:35 2023 (-0500)
- * Version: 1.0 
- * 
- * Description: test functions qopen(), qclose(), qput(), and qget() in queue.c 
- * 
+ * Description: To test qput and qget
  */
 
-#include "list.h"
 #include "queue.h"
 #include <stdio.h>
-#include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
 
 
-car_t* make_car(car_t* next, char* plate, double price, int year){
-	car_t *newcar = malloc(sizeof(car_t));
-	newcar->next = next;
-	strcpy(newcar->plate, plate);
-	newcar->price = price;
-	newcar->year = year;
+typedef struct person {
+	char name[10];
+	int age;
+	double rate;
+} person_t;
 
-	return newcar;
-
+person_t* make_person(char* name, int age, double rate){
+  person_t *tmp = malloc(sizeof(person_t));
+  strcpy(tmp->name, name);
+  tmp->age = age;
+  tmp->rate = rate;
+  return tmp;
 }
 
-int main (void) {
-	qp = qopen()
-		
-	car_t car1 = make_car(NULL, "5RPD50", 19000, 2015);
-	
-	qput(qp, (void*)car1);
+int main(void){	
 
+	person_t *pp;
+	struct queue_t *qp;
 
-	for (car_t *f = c1; f != NULL; f = f->next){
-		print("%s\n", f->plate);
+	qp = qopen();
+
+	pp = make_person("Fred",20,4.6);
+
+	int32_t res = qput(qp, (void *)pp);
+
+	if (res) {
+		printf("Fail: did not qput successfully\n");
+		return 1;
+	}
+
+	void* pp_res = qget(qp);
+
+	if ((void *)pp != (void *)pp_res){
+		printf("Fail: did not qget successfully\n");
+		return 1;
 	}
 	
-	car1 = (car_t*)qget();
+	qclose(qp); // free queue
 
-	qclose(qp); // note: clear out queue before closing
+	free(pp);	// free person_t	
+	
+	return 0;
 
 }
+

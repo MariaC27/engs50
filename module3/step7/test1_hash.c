@@ -9,6 +9,7 @@
  * 
  */
 
+//tests for open/close, put, remove
 typedef struct dog{
 	double age;
 	char *name;
@@ -22,5 +23,19 @@ int main(void){
 	dog_t sparky  = {4, "sparky", "border collie", 1};
 	dog_t rose = {2.5, "rose", "golden retriever", 0};
 	
-	hput(h1, (void*)sparky);
+	int32_t put_res = hput(h1, (void*)sparky);
+	if (put_res != 0){
+		printf("Fail: did not hput successfully\n");
+		return 1;
+	}
+	else{
+		// put was successful, so repeat
+		hput(h1, (void*)rose);
+	}
+
+	void* remove_res = hremove(h1, (void*)sparky);
+	if (remove_res == NULL){
+		printf("Fail: did not hremove successfully\n");
+		return 1
+	}
 }
