@@ -1,9 +1,7 @@
 #!/bin/bash
 
 files=(
-		concat_test
-		test_queue1
-		test_queue2
+		test1_hash
 )
 
 echo "the files list is: ${files[*]}"

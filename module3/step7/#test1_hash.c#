@@ -24,8 +24,8 @@ typedef struct dog{
 dog_t *make_dog(double age, char* name, char* breed, int gender){
 	dog_t* tmp = malloc(sizeof(dog_t));
 	tmp->age = age;
-	strcpy(name,   tmp->name);
-	strcpy(breed, tmp->breed);
+	strcpy(tmp->name, name);
+	strcpy(tmp->breed, breed);
 	tmp->gender = gender;
 	return tmp;
 }
