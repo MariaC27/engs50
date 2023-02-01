@@ -25,15 +25,6 @@ car_t* make_car(car_t* next, char* plate, double price, int year){
   return retp;
 }
 
-
-void print_car(car_t *car){
-	if(car == NULL)
-		printf("null car\n\n");
-	else
-		printf("plate: %s\nprice: %f\nyear %i\n\n", car->plate, car->price, car->year);
-}
-
-
 int main(void){	
 
 
@@ -70,80 +61,40 @@ int main(void){
 		printf("Did not correctly add to non-empty list");
 		return 1;
 	}
-	
-	//printf("\n"); // will not work without this print line, has something to do with memory allocation
- 
+	 
 	car_t *car5_remp = lremove(car5->plate); // top car
-	print_car(car5_remp);
-	car_t car5_rem = *car5_remp; // intalize back to car_t
 	
-
-
 	car_t *car1_remp = lremove(car1->plate); // bottom car
-	print_car(car1_remp);
-	car_t car1_rem = *car1_remp; 
-
 
 	car_t *car3_remp = lremove(car3->plate); // middle car
-	print_car(car3_remp);
-	car_t car3_rem = *car3_remp; 
 	
-	
-	
-	if (strcmp(car5->plate, car5_rem.plate)){ // check if plates are the same 
+	if (strcmp(car5_remp->plate, "94L72D")!=0){ // check if plates are the same 
 		printf("Failed to remove a top car correctly");
 		return 1;
 	}
-	if (strcmp(car1->plate, car1_rem.plate)){ // check if plates are the same 
+	if (strcmp(car1_remp->plate, "TJF901")!=0){ // check if plates are the same 
 		printf("Failed to remove a bottom car correctly");
 		return 1;
 	}
-	if (strcmp(car3->plate, car3_rem.plate)){ // check if plates are the same 
+	if (strcmp(car3_remp->plate, "PPP444")!=0){ // check if plates are the same 
 		printf("Failed to remove a middle car correctly");
 		return 1;
-		}
+	}
 
 	// now we do lget and see if we properly removed using lremove
-
-	lget();  // should be car 4			
-	lget(); // car 2 - no more cars after this
-	lget();
+	car_t* car4p = lget();  
+	car_t* car2p = lget();  		
 	
-	//print_car(car4p);
-	//print_car(car2p);
-	//print_car(car_null_p);
+	if ((strcmp(car4p->plate, "5624FG")!=0) || (strcmp(car2p->plate, "GRP452")!=0)) { // check is same cars came back in correct order
+		printf("Fail: lget returned wrong match\n");
+		return 1;
+	}
 
 	free(car1);
 	free(car2);
 	free(car3);
 	free(car4);
 	free(car5);
+
 	return 0;
-
-	/*
-	car_t car2_rem = *car2p; 
-	car_t car4_rem = *car4p; 
-	car_t car_null = *car_null_p; 
-
-
-	printf(car_null.plate);
-	printf("\n");
-
-	printf(car2_rem.plate);
-	printf("\n");
-	printf(car4_rem.plate);
-	printf("\n");
-	printf(car2.plate);
-	printf("\n");
-	printf(car4.plate);
-
-
-
-	if (strcmp(car2_rem.plate, car2.plate)==0){ // check is same cars came back in correct order
-		printf("Match");
-		return 1;
-	}
-	printf("doesnt match");
-	return 0;*/
-
 }

@@ -15,12 +15,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-void print_car(char str[4], car_t car){
-	printf("%s contents:\n   plate: %s\n   price:%f \n   year: %i\n", str, car.plate, car.price, car.year);
-}
-*/
-
 car_t* make_car(car_t* next, char* plate, double price, int year){
 	car_t *retp = malloc(sizeof(car_t));
 	retp->next = next;
@@ -45,9 +39,6 @@ int main(void){
 	lput(car4);
 	lput(car5);
 	
-	for(car_t *f = car1; f !=NULL; f = f->next){
-		printf("%s\n", f->plate);
-	}
 
 	free(car1);
 	free(car2);

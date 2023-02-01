@@ -36,15 +36,15 @@ int main(void){
 	}
 
 	car_t *car2 = make_car(NULL, "GRP452", 30000, 2003);
-  car_t *car3 = make_car(NULL, "PPP444", 33050, 2020);
-  car_t *car4 = make_car(NULL, "5624FG", 25000, 2004);
-  car_t *car5 = make_car(NULL, "94L72D", 10000, 1993);
+  	car_t *car3 = make_car(NULL, "PPP444", 33050, 2020);
+  	car_t *car4 = make_car(NULL, "5624FG", 25000, 2004);
+  	car_t *car5 = make_car(NULL, "94L72D", 10000, 1993);
 
 
-  int32_t t2 = lput(car2);
-  int32_t t3 = lput(car3);
-  int32_t t4 = lput(car4);
-  int32_t t5 = lput(car5);
+  	int32_t t2 = lput(car2);
+  	int32_t t3 = lput(car3);
+  	int32_t t4 = lput(car4);
+  	int32_t t5 = lput(car5);
 
 	int32_t t_total = t2+t3+t4+t5;
 
@@ -80,5 +80,6 @@ int main(void){
 	free(car3);
 	free(car4);
 	free(car5);
+	
 	return 0;
 }
