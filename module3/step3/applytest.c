@@ -48,7 +48,6 @@ int main(void){
 	lapply(decrease_price);
 
 
-<<<<<<< HEAD
 	if (car1->price!=prices[0]-1000 ||
 		car2->price!=prices[1]-1000 ||
 		car3->price!=prices[2]-1000 ||
@@ -56,25 +55,6 @@ int main(void){
 		car5->price!=prices[4]-1000){
 		printf("Fail: did not properly complete apply test\n");
 		return 1;
-=======
-
-	free(car1);
-	free(car2);
-	free(car3);
-	free(car4);
-	free(car5);
-
-	return returncode;
-
-	/*printf("%f : %f\n\n", price1, car1.price);
-	if(car1.price==price1-1000 &&
-		 car2.price==price2-1000 &&
-		 car3.price==price3-1000 &&
-		 car4.price==price4-1000 &&
-		 car5.price==price5-1000){
-		printf("function applied successfully\n");
-		return 0;
->>>>>>> 44bfab35154bf15b61c53169b49e9f164dcb0813
 	}
 
 	free(car1);
