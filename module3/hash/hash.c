@@ -17,7 +17,7 @@
  * Hash.
  */
 
-#define MAXTABLESIZE 20
+#define MAXTABLESIZE 1000
 #define get16bits(d) (*((const uint16_t *) (d)))
 
 static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
@@ -106,7 +106,7 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen){
 void happly(hashtable_t *htp, void (*fn)(void* ep)){
 	struct hashtable_t* h = htp;
 
-	for(int i = 0; i < MAXTABLESIZE; i++){
+	for(int i = 0; i < h->size; i++){
 		qapply(h->table[i], fn);
 	}
 }
@@ -126,13 +126,10 @@ void *hsearch(hashtable_t *htp,
 	return n;
 }
 
-void *hremove(hashtable_t *htp,
-        bool (*searchfn)(void* elementp, const void* searchkeyp),
-        const char *key,
-							int32_t keylen){
+void *hremove(hashtable_t *htp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen){
 	struct hashtable_t* h = htp;
-
 	uint32_t table_position = SuperFastHash(key, keylen, h->size);
-  void *n = qremove(h->table[table_position], searchfn, key);
-  return n;
+  queue_t* qp = h->table[table_position];
+	void* n = qremove(qp, searchfn, (const void *)key);
+	return n;
 }

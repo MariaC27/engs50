@@ -19,7 +19,8 @@ removetest: removetest.c
 
 
 clean:
-	rm -f list.o puttest.o gettest.o applytest.o removetest.o
-	rm -f puttest.exe gettest.exe applytest.exe removetest.exe  
-	#rm -f *.o
+	#rm -f *.o 
+	#rm -f puttest gettest applytest removetest  
 	#rm -f valgrind_puttest.txt valgrind_gettest.txt valgrind_applytest.txt valgrind_removetest.txt
+	rm -f list.o puttest.o gettest.o applytest.o removetest.o
+	rm -f puttest.exe gettest.exe applytest.exe removetest.exe

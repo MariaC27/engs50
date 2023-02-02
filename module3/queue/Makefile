@@ -22,6 +22,8 @@ qconcattest: qconcattest.c
 
 
 clean:
-	rm -f *.o qputgettest qclosetest qapplytest qsearchtest qconcattest 
-	rm -f valgrind_qputgettest.txt valgrind_qclosetest.txt valgrind_qapplytest.txt valgrind_qsearchtest.txt valgrind_qconcattest.txt
-
+	#rm -f *.o
+	#rm -f qputgettest qclosetest qapplytest qsearchtest qconcattest 
+	#rm -f valgrind_qputgettest.txt valgrind_qclosetest.txt valgrind_qapplytest.txt valgrind_qsearchtest.txt valgrind_qconcattest.txt
+	rm -f queue.o qputgettest.o qclosetest.o qapplytest.o qsearchtest.o qconcattest.o
+	rm -f qputgettest.exe qclosetest.exe qapplytest.exe qsearchtest.exe qconcattest.exe

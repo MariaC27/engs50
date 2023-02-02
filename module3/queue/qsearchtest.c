@@ -36,7 +36,10 @@ bool search_queue(void* data, const void* keyp){
 		return true; // if equal
 	return false; // if not equal
 }
-
+void print_person(void* data){
+	person_t* person = data;
+	printf("\nName: %s\nAge: %i\nRate %f\n", person->name, person->age, person->rate);
+}
 int main(void){	
 
 	person_t *one_p;
@@ -93,13 +96,14 @@ int main(void){
 	}
 
 	void* skeyp4_res = qremove(qp, search_queue, skeyp4); // remove with possible key
+
 	if ((void *)one_p != skeyp4_res){
 		printf("Fail: qremove did not return correct person");
 		return 1;
 	}
 
 	void* bill_res = qget(qp);
-	if ((void *)bill_res != bill_res){
+	if ((void *)two_p != bill_res){
 		printf("Fail: qget did not return bill implying qremove did not work");
 		return 1;
 	}

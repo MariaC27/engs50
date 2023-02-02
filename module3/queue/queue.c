@@ -1,19 +1,16 @@
 /* queue.c --- implements the interface queue.h
-0;10;1c * 
  * 
  * Author: Justin Sapun
  * Created: Wed Jan 26 
- * Version: 1.0
- * 
- * Description: 
- * */
+ * Description: Queue data structure created with linked list approach 
+ */
 
 #include "queue.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 
 typedef struct Node {	
 	struct Node *data;
@@ -27,7 +24,7 @@ struct queue_t {
 
 /* create an empty queue */
 queue_t* qopen(void) { // Open Queue without nodes
-	struct queue_t* tmp = malloc(sizeof(Node_t));
+	struct queue_t* tmp = (struct queue_t*)malloc(sizeof(struct queue_t));
 	tmp->front = NULL;
 	tmp->back = NULL;
 	return tmp;
@@ -69,19 +66,15 @@ int32_t qput(queue_t *qp, void *elementp){
 /* get the first element from queue, removing it from the queue*/
 void* qget(queue_t *qp){
 	struct queue_t *q = qp;
-	//Node_t* tmp = q->front; // to free memory
 
 	if (q->front == NULL) // if empty queue
 		return NULL;
-
-	void* elem = q->front->data;
-
-	q->front = q->front->next;
-	//free(tmp);
-
+	Node_t* tmp = q->front;
+	void* elem = tmp->data;
+	q->front = tmp->next;
+	free(tmp);
 	return elem;
 }
-
 /* apply a function to every element of the queue */
 void qapply(queue_t *qp, void (*fn)(void* elementp)){
 	struct queue_t *q = qp;
@@ -96,8 +89,8 @@ void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
 	struct queue_t *q = qp;
 
 	for (Node_t* current=q->front; current!=NULL;current=current->next){
-		if (searchfn(current->data, skeyp)) 
-			return (void *) current->data; // if found
+		if (searchfn(current->data, skeyp))
+			return (void *)current->data; // if found
 	}
 	return NULL; // if not found
 }
@@ -105,28 +98,64 @@ void* qsearch(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), co
 /* search a queue using a supplied boolean function and remove*/
 void* qremove(queue_t *qp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp){
 	struct queue_t *q = qp;
+	Node_t* curr;
+	Node_t* prev;
 
-	for (Node_t* current=q->front; current!=NULL;current=current->next){
-		if (searchfn(current->data, skeyp)){ 
-			Node_t* tmp = current;
-			current->next = current->next->next;
-			return (void *) tmp->data; // if found
+	for (curr=q->front; curr!=NULL; curr=curr->next){
+		if (searchfn(curr->data, skeyp)) { // check keys
+
+			if ((curr == q->back) && (curr == q->front)){
+				q->front = NULL;
+				q->back = NULL;
+				void* tmp_data = curr->data;
+				free(curr);
+				return tmp_data;
+			}
+			
+			if(curr == q->back){
+				prev->next = NULL;
+				q->back = prev;
+				void* tmp_data = curr->data;
+				free(curr);
+				return tmp_data;
+			}
+			else if(curr == q->front){
+				q->front = curr->next;
+				void* tmp_data = curr->data;
+				free(curr);
+				return tmp_data;
+			}
+			else{
+				prev->next = curr->next;
+				void* tmp_data = curr->data;
+				free(curr);
+				return tmp_data; 
+			}
 		}
+		prev=curr;
 	}
-	return NULL; // if not found
+	return NULL;
 }
 
-/* concatenatenates elements of q2 into q1
+/* concatenates elements of q2 into q1
 q2 is dealocated, closed, and unusable upon completion */
 void qconcat(queue_t *q1p, queue_t *q2p){
 	struct queue_t *q1 = q1p;
 	struct queue_t *q2 = q2p;
-
-	Node_t* tmp = qget(q2);
-	void* tmp_data = tmp->data;
-	qput(q1, tmp_data);
-
-
-
-
+	if ((q1->front == NULL) && (q2->front == NULL)){ // concat two empties
+		free(q2);
+	}
+	else if (q1->front == NULL){ // concat ... to empty
+		q1->front = q2->front;
+		q1->back = q2->back;
+		free(q2);
+	}
+	else if (q2->front == NULL){ // concat empty to ...
+		free(q2);
+	}
+	else{
+		q1->back->next = q2->front;
+		q1->back = q2->back;
+		free(q2);
+	}
 }

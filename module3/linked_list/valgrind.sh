@@ -1,7 +1,10 @@
 #!/bin/bash
 
 files=(
-		test1_hash
+		gettest
+		puttest
+		applytest
+		removetest
 )
 
 echo "the files list is: ${files[*]}"
