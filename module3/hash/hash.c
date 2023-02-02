@@ -2,9 +2,9 @@
  * hash.c -- implements a generic hash table as an indexed set of queues.
  *
  */
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "queue.h"
 #include "hash.h"
 

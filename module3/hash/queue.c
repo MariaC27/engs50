@@ -4,13 +4,12 @@
  * Created: Wed Jan 26 
  * Description: Queue data structure created with linked list approach 
  */
-
-#include "queue.h"
-#include <stddef.h>
-#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include "queue.h"
 
 typedef struct Node {	
 	struct Node *data;
