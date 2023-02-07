@@ -32,21 +32,14 @@ queue_t* qopen(void) { // Open Queue without nodes
 
 /* deallocate a queue, frees everything in it */
 void qclose(queue_t *qp) { // deallocate queue
-    struct queue_t* q = qp;
-		
-    if (qp != NULL)
-    {
-        Node_t *current = q->front;
-        Node_t *next;
-        while (current != NULL)
-        {
-            next = current->next;
-            free(current->data);
-            free(current);
-            current = next;
-        }
-    }
-    free(q);
+	struct queue_t* q = qp;
+
+	for (Node_t* current=q->front; current!=NULL;){
+		Node_t* tmp = current->next;
+		free(current);
+		current = tmp;
+	}
+	free(q);
 }
 
 /* put element at the end of the queue*/
