@@ -1,3 +1,4 @@
+
 /* crawler.c --- code for crawler
 0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c * 
  * 
@@ -17,24 +18,19 @@
 #include <hash.h>
 #include <stdbool.h>
 
-/*typedef struct weburl {
-  char *url;                               // url of the page
-  char *html;                              // html code of the page
-  size_t html_len;                         // length of html code
-  int depth;                               // depth of crawl
-	} weburl_t;*/
-
 void print_webpage(void*  pagep){
-  webpage_t* page = pagep;
-  printf("URL: %s\n", webpage_getURL(page));
+	printf("%s\n", webpage_getURL(pagep));
 }
-/*void del_res(void* pagep){
-	webpage_t* page = pagep;
-	free(webpage_getURL(page));
-	}*/
+void del_q_webpage(void* data){ // this function tries to free up url pointer and page for every element in queue
+	//webpage_t *pagep = data;
+	//free(webpage_getURL(pagep)); // free result
+
+	webpage_delete(data);
+}
+
 bool search_url(void* pagep, const void* searchkeyp){
-	webpage_t* page = pagep;
-	if (!strcmp(webpage_getURL(page), searchkeyp))
+	webpage_t* site = pagep;
+	if (!strcmp(webpage_getURL(site), searchkeyp))
 		return true;
 	return false;
 }
@@ -77,22 +73,25 @@ int main(void){
 			
 		// Find all URLS and print whether they are internal or external
 
-		pagesave(page, 1, "../pages/");
+		pagesave(page, 1, "../pages/"); // step 5 - Page Save to File
 		
 		struct queue_t* qp = qopen();
-		hashtable_t* h1 = hopen(10);
-		
+ 		hashtable_t* h1 = hopen(10);
 		
 		int pos = 0;
 		char *result;
 		printf("\nBefore Queue:\n");
-		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){
+
+		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){ // Step 2 - Print I/E URLS
 			printf("Found url: %s", result);
+
 			if(IsInternalURL(result)){
 				printf(" - INTERNAL\n");
-				if (!hsearch(h1, search_url, (const void*)result, strlen(result))){ 
-					hput(h1, (void *)page, result, strlen(result));
-					qput(qp, (void *)page);				
+
+				if (!hsearch(h1, search_url, (void*)result, strlen(result))){
+				  webpage_t *tmp = webpage_new(result, 0, NULL); // Step 3 - Queue
+					qput(qp, (void *)tmp);				                 // Step 3 - Queue
+ 					hput(h1, (void *)tmp, result, strlen(result)); // Step 4 - Hash
 				}
 			}
 			else{
@@ -102,8 +101,8 @@ int main(void){
 		}
 		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
-		
-		//		qapply(qp, del_res);
+
+		//qapply(qp, del_q_webpage);
 		qclose(qp);
 
 		webpage_delete(page);

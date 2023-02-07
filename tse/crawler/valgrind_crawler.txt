@@ -1,102 +1,69 @@
-==19508== Memcheck, a memory error detector
-==19508== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==19508== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
-==19508== Command: crawler
-==19508== Parent PID: 19500
-==19508== 
-==19508== Invalid free() / delete / delete[] / realloc()
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Address 0x5a95b50 is 0 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== Invalid read of size 8
-==19508==    at 0x10A621: webpage_delete (webpage.c:85)
-==19508==    by 0x109A94: main (crawler.c:110)
-==19508==  Address 0x5a95b50 is 0 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== Invalid read of size 8
-==19508==    at 0x10A62D: webpage_delete (webpage.c:85)
-==19508==    by 0x109A94: main (crawler.c:110)
-==19508==  Address 0x5a95b50 is 0 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== Invalid read of size 8
-==19508==    at 0x10A63C: webpage_delete (webpage.c:86)
-==19508==    by 0x109A94: main (crawler.c:110)
-==19508==  Address 0x5a95b58 is 8 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== Invalid read of size 8
-==19508==    at 0x10A649: webpage_delete (webpage.c:86)
-==19508==    by 0x109A94: main (crawler.c:110)
-==19508==  Address 0x5a95b58 is 8 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== Invalid free() / delete / delete[] / realloc()
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A660: webpage_delete (webpage.c:87)
-==19508==    by 0x109A94: main (crawler.c:110)
-==19508==  Address 0x5a95b50 is 0 bytes inside a block of size 32 free'd
-==19508==    at 0x484B27F: free (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x109B35: qclose (queue.c:44)
-==19508==    by 0x109A88: main (crawler.c:108)
-==19508==  Block was alloc'd at
-==19508==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10A55C: webpage_new (webpage.c:70)
-==19508==    by 0x10991D: main (crawler.c:75)
-==19508== 
-==19508== 
-==19508== HEAP SUMMARY:
-==19508==     in use at exit: 8,722 bytes in 27 blocks
-==19508==   total heap usage: 224,871 allocs, 224,852 frees, 9,598,749 bytes allocated
-==19508== 
-==19508== 426 bytes in 8 blocks are definitely lost in loss record 4 of 5
-==19508==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
-==19508==    by 0x10B71A: FixupRelativeURL (webpage.c:777)
-==19508==    by 0x10AACE: webpage_getNextURL (webpage.c:280)
-==19508==    by 0x109A4A: main (crawler.c:90)
-==19508== 
-==19508== LEAK SUMMARY:
-==19508==    definitely lost: 426 bytes in 8 blocks
-==19508==    indirectly lost: 0 bytes in 0 blocks
-==19508==      possibly lost: 0 bytes in 0 blocks
-==19508==    still reachable: 8,296 bytes in 19 blocks
-==19508==         suppressed: 0 bytes in 0 blocks
-==19508== Reachable blocks (those to which a pointer was found) are not shown.
-==19508== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==19508== 
-==19508== For lists of detected and suppressed errors, rerun with: -s
-==19508== ERROR SUMMARY: 13 errors from 7 contexts (suppressed: 0 from 0)
+==187701== Memcheck, a memory error detector
+==187701== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==187701== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==187701== Command: crawler
+==187701== Parent PID: 187700
+==187701== 
+==187701== 
+==187701== Process terminating with default action of signal 2 (SIGINT)
+==187701==    at 0x4DD1F42: BN_num_bits_word (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4DD3169: BN_num_bits (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4ED83D0: RSA_size (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4F6592B: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E88D76: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E8905B: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E54ED1: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E543F2: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4F44047: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E5462A: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4F45787: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701==    by 0x4E5462A: ??? (in /usr/lib/x86_64-linux-gnu/libcrypto.so.3)
+==187701== 
+==187701== HEAP SUMMARY:
+==187701==     in use at exit: 1,156,695 bytes in 11,099 blocks
+==187701==   total heap usage: 109,838 allocs, 98,739 frees, 4,915,554 bytes allocated
+==187701== 
+==187701== 336 bytes in 1 blocks are possibly lost in loss record 874 of 1,072
+==187701==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==187701==    by 0x40147D9: calloc (rtld-malloc.h:44)
+==187701==    by 0x40147D9: allocate_dtv (dl-tls.c:375)
+==187701==    by 0x40147D9: _dl_allocate_tls (dl-tls.c:634)
+==187701==    by 0x49C7834: allocate_stack (allocatestack.c:430)
+==187701==    by 0x49C7834: pthread_create@@GLIBC_2.34 (pthread_create.c:647)
+==187701==    by 0x48BC0B7: ??? (in /usr/lib/x86_64-linux-gnu/libcurl.so.4.7.0)
+==187701==    by 0x48F57A1: ??? (in /usr/lib/x86_64-linux-gnu/libcurl.so.4.7.0)
+==187701==    by 0x48D3BDF: ??? (in /usr/lib/x86_64-linux-gnu/libcurl.so.4.7.0)
+==187701==    by 0x48D545D: curl_multi_perform (in /usr/lib/x86_64-linux-gnu/libcurl.so.4.7.0)
+==187701==    by 0x48B1EA2: curl_easy_perform (in /usr/lib/x86_64-linux-gnu/libcurl.so.4.7.0)
+==187701==    by 0x10BC7C: webpage_fetch (webpage.c:964)
+==187701==    by 0x109935: main (crawler.c:72)
+==187701== 
+==187701== 2,304 bytes in 1 blocks are possibly lost in loss record 1,012 of 1,072
+==187701==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==187701==    by 0x4005D97: malloc (rtld-malloc.h:56)
+==187701==    by 0x4005D97: _dlfo_mappings_segment_allocate (dl-find_object.c:217)
+==187701==    by 0x4005D97: _dl_find_object_update_1 (dl-find_object.c:671)
+==187701==    by 0x4005D97: _dl_find_object_update (dl-find_object.c:804)
+==187701==    by 0x400ECCF: dl_open_worker_begin (dl-open.c:735)
+==187701==    by 0x4AA6C27: _dl_catch_exception (dl-error-skeleton.c:208)
+==187701==    by 0x400DF99: dl_open_worker (dl-open.c:782)
+==187701==    by 0x4AA6C27: _dl_catch_exception (dl-error-skeleton.c:208)
+==187701==    by 0x400E34D: _dl_open (dl-open.c:883)
+==187701==    by 0x4AA6F90: do_dlopen (dl-libc.c:95)
+==187701==    by 0x4AA6C27: _dl_catch_exception (dl-error-skeleton.c:208)
+==187701==    by 0x4AA6CF2: _dl_catch_error (dl-error-skeleton.c:227)
+==187701==    by 0x4AA70C6: dlerror_run (dl-libc.c:45)
+==187701==    by 0x4AA70C6: __libc_dlopen_mode (dl-libc.c:162)
+==187701==    by 0x4A87299: module_load (nss_module.c:191)
+==187701== 
+==187701== LEAK SUMMARY:
+==187701==    definitely lost: 0 bytes in 0 blocks
+==187701==    indirectly lost: 0 bytes in 0 blocks
+==187701==      possibly lost: 2,640 bytes in 2 blocks
+==187701==    still reachable: 1,154,055 bytes in 11,097 blocks
+==187701==         suppressed: 0 bytes in 0 blocks
+==187701== Reachable blocks (those to which a pointer was found) are not shown.
+==187701== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==187701== 
+==187701== For lists of detected and suppressed errors, rerun with: -s
+==187701== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
