@@ -1,5 +1,5 @@
 /* crawler.c --- code for crawler
-0;136;0c0;136;0c0;136;0c0;136;0c * 
+0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c * 
  * 
  * Author: Maria H. Cristoforo
  * Created: Sun Feb  5 15:56:25 2023 (-0500)
@@ -23,42 +23,47 @@ typedef struct weburl {
 } weburl_t;
 
 void print_webpage(void* data){
-  weburl_t* page = data;
-  printf("URL: %s\n", page->url);
+  weburl_t* site = data;
+  printf("URL: %s\n", site->url);
+}
+void del_res(void* data){
+	weburl_t* site = data;
+	free(site->url);
 }
 
 int main(void){
 	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
 	if(webpage_fetch(page)){
 		//char *html = webpage_getHTML(page);
-		//printf("Found html\n");
-		
-		// find all URLS and print whether they are internal or external
+			
+		// Find all URLS and print whether they are internal or external
 
 		struct queue_t* qp = qopen();
 
-
 		int pos = 0;
 		char *result;
+		printf("\nBefore Queue:\n");
 		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){
-			weburl_t* tmp = malloc(sizeof(weburl_t));
 			printf("Found url: %s", result);
 			if(IsInternalURL(result)){
+				weburl_t* tmp = malloc(sizeof(weburl_t));
 				printf(" - INTERNAL\n");
  				tmp->url = result;
 				qput(qp, (void *)tmp);
+				//free(tmp);
 			}
 			else{
 				printf(" - EXTERNAL\n");
+				free(result);
 			}
-			//free(result); // valgrind issue here
-			//free(tmp);
+			
 		}
+		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
-		//weburl_t* x = (weburl_t *)qget(qp);
-		//printf("After\nURL:%s\n",x->url);
+		qapply(qp, del_res);
 		
 		qclose(qp);
+
 		webpage_delete(page);
 		exit(EXIT_SUCCESS);
 	}
