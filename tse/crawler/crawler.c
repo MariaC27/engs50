@@ -17,24 +17,24 @@
 #include <hash.h>
 #include <stdbool.h>
 
-typedef struct weburl {
+/*typedef struct weburl {
   char *url;                               // url of the page
   char *html;                              // html code of the page
   size_t html_len;                         // length of html code
   int depth;                               // depth of crawl
-} weburl_t;
+	} weburl_t;*/
 
-void print_webpage(void* data){
-  weburl_t* site = data;
-  printf("URL: %s\n", site->url);
+void print_webpage(void*  pagep){
+  webpage_t* page = pagep;
+  printf("URL: %s\n", webpage_getURL(page));
 }
-void del_res(void* data){
-	weburl_t* site = data;
-	free(site->url);
-}
-bool search_url(void* elementp, const void* searchkeyp){
-	weburl_t* web = elementp;
-	if (!strcmp(web->url, searchkeyp))
+/*void del_res(void* pagep){
+	webpage_t* page = pagep;
+	free(webpage_getURL(page));
+	}*/
+bool search_url(void* pagep, const void* searchkeyp){
+	webpage_t* page = pagep;
+	if (!strcmp(webpage_getURL(page), searchkeyp))
 		return true;
 	return false;
 }
@@ -74,7 +74,6 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 int main(void){
 	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
 	if(webpage_fetch(page)){
-		//char *html = webpage_getHTML(page);
 			
 		// Find all URLS and print whether they are internal or external
 
@@ -85,32 +84,26 @@ int main(void){
 		
 		
 		int pos = 0;
-		int counter = 0;
 		char *result;
 		printf("\nBefore Queue:\n");
 		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){
 			printf("Found url: %s", result);
 			if(IsInternalURL(result)){
-				weburl_t* tmp = malloc(sizeof(weburl_t));
 				printf(" - INTERNAL\n");
- 				tmp->url = result;
-
 				if (!hsearch(h1, search_url, (const void*)result, strlen(result))){ 
-					hput(h1, (void *)tmp, tmp->url, strlen(tmp->url));
-					qput(qp, (void *)tmp);				
+					hput(h1, (void *)page, result, strlen(result));
+					qput(qp, (void *)page);				
 				}
-				counter++;
 			}
 			else{
 				printf(" - EXTERNAL\n");
 				free(result);
 			}
-			
 		}
 		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
 		
-		qapply(qp, del_res);
+		//		qapply(qp, del_res);
 		qclose(qp);
 
 		webpage_delete(page);
