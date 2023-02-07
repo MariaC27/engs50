@@ -14,6 +14,8 @@
 #include <string.h>
 #include <webpage.h>
 #include <queue.h>
+#include <hash.h>
+#include <stdbool.h>
 
 typedef struct weburl {
   char *url;                               // url of the page
@@ -30,6 +32,12 @@ void del_res(void* data){
 	weburl_t* site = data;
 	free(site->url);
 }
+bool search_url(void* elementp, const void* searchkeyp){
+	weburl_t* web = elementp;
+	if (!strcmp(web->url, searchkeyp))
+		return true;
+	return false;
+}
 
 int main(void){
 	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
@@ -39,8 +47,11 @@ int main(void){
 		// Find all URLS and print whether they are internal or external
 
 		struct queue_t* qp = qopen();
-
+		hashtable_t* h1 = hopen(10);
+		
+		
 		int pos = 0;
+		int counter = 0;
 		char *result;
 		printf("\nBefore Queue:\n");
 		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){
@@ -49,8 +60,12 @@ int main(void){
 				weburl_t* tmp = malloc(sizeof(weburl_t));
 				printf(" - INTERNAL\n");
  				tmp->url = result;
-				qput(qp, (void *)tmp);
-				//free(tmp);
+
+				if (!hsearch(h1, search_url, (const void*)result, strlen(result))){ 
+					hput(h1, (void *)tmp, tmp->url, strlen(tmp->url));
+					qput(qp, (void *)tmp);				
+				}
+				counter++;
 			}
 			else{
 				printf(" - EXTERNAL\n");
@@ -60,8 +75,8 @@ int main(void){
 		}
 		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
-		qapply(qp, del_res);
 		
+		qapply(qp, del_res);
 		qclose(qp);
 
 		webpage_delete(page);
