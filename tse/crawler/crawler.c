@@ -22,9 +22,6 @@ void print_webpage(void*  pagep){
 	printf("%s\n", webpage_getURL(pagep));
 }
 void del_q_webpage(void* data){ // this function tries to free up url pointer and page for every element in queue
-	//webpage_t *pagep = data;
-	//free(webpage_getURL(pagep)); // free result
-
 	webpage_delete(data);
 }
 
@@ -76,7 +73,7 @@ int main(void){
 		pagesave(page, 1, "../pages/"); // step 5 - Page Save to File
 		
 		struct queue_t* qp = qopen();
- 		hashtable_t* h1 = hopen(10);
+		hashtable_t* h1 = hopen(10);
 		
 		int pos = 0;
 		char *result;
@@ -88,11 +85,12 @@ int main(void){
 			if(IsInternalURL(result)){
 				printf(" - INTERNAL\n");
 
-				if (!hsearch(h1, search_url, (void*)result, strlen(result))){
-				  webpage_t *tmp = webpage_new(result, 0, NULL); // Step 3 - Queue
+			 	if (!hsearch(h1, search_url, (void*)result, strlen(result))){
+					webpage_t *tmp = webpage_new(result, 0, NULL); // Step 3 - Queue
 					qput(qp, (void *)tmp);				                 // Step 3 - Queue
  					hput(h1, (void *)tmp, result, strlen(result)); // Step 4 - Hash
-				}
+			 	}
+				free(result);
 			}
 			else{
 				printf(" - EXTERNAL\n");
@@ -102,15 +100,15 @@ int main(void){
 		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
 
-		//qapply(qp, del_q_webpage);
-		qclose(qp);
-
+		qapply(qp, del_q_webpage);
+	  qclose(qp);
+		hclose(h1);
 		webpage_delete(page);
+
 		exit(EXIT_SUCCESS);
 	}
 	else{
 		printf("Unable to fetch page successfully\n");
 		exit(EXIT_FAILURE);
-  }
-	
+  }	
 }
