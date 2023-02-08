@@ -1,3 +1,4 @@
+
 /* crawler.c --- code for crawler
 0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c0;136;0c * 
  * 
@@ -17,24 +18,16 @@
 #include <hash.h>
 #include <stdbool.h>
 
-typedef struct weburl {
-  char *url;                               // url of the page
-  char *html;                              // html code of the page
-  size_t html_len;                         // length of html code
-  int depth;                               // depth of crawl
-} weburl_t;
+void print_webpage(void*  pagep){
+	printf("%s\n", webpage_getURL(pagep));
+}
+void del_q_webpage(void* data){ // this function tries to free up url pointer and page for every element in queue
+	webpage_delete(data);
+}
 
-void print_webpage(void* data){
-  weburl_t* site = data;
-  printf("URL: %s\n", site->url);
-}
-void del_res(void* data){
-	weburl_t* site = data;
-	free(site->url);
-}
-bool search_url(void* elementp, const void* searchkeyp){
-	weburl_t* web = elementp;
-	if (!strcmp(web->url, searchkeyp))
+bool search_url(void* pagep, const void* searchkeyp){
+	webpage_t* site = pagep;
+	if (!strcmp(webpage_getURL(site), searchkeyp))
 		return true;
 	return false;
 }
@@ -74,51 +67,48 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 int main(void){
 	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
 	if(webpage_fetch(page)){
-		//char *html = webpage_getHTML(page);
 			
 		// Find all URLS and print whether they are internal or external
 
-		pagesave(page, 1, "../pages/");
+		pagesave(page, 1, "../pages/"); // step 5 - Page Save to File
 		
 		struct queue_t* qp = qopen();
 		hashtable_t* h1 = hopen(10);
 		
-		
 		int pos = 0;
-		int counter = 0;
 		char *result;
 		printf("\nBefore Queue:\n");
-		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){
-			printf("Found url: %s", result);
-			if(IsInternalURL(result)){
-				weburl_t* tmp = malloc(sizeof(weburl_t));
-				printf(" - INTERNAL\n");
- 				tmp->url = result;
 
-				if (!hsearch(h1, search_url, (const void*)result, strlen(result))){ 
-					hput(h1, (void *)tmp, tmp->url, strlen(tmp->url));
-					qput(qp, (void *)tmp);				
-				}
-				counter++;
+		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){ // Step 2 - Print I/E URLS
+			printf("Found url: %s", result);
+
+			if(IsInternalURL(result)){
+				printf(" - INTERNAL\n");
+
+			 	if (!hsearch(h1, search_url, (void*)result, strlen(result))){
+					webpage_t *tmp = webpage_new(result, 0, NULL); // Step 3 - Queue
+					qput(qp, (void *)tmp);				                 // Step 3 - Queue
+ 					hput(h1, (void *)tmp, result, strlen(result)); // Step 4 - Hash
+			 	}
+				free(result);
 			}
 			else{
 				printf(" - EXTERNAL\n");
 				free(result);
 			}
-			
 		}
 		printf("\nAfter Queue:\n");
 		qapply(qp, print_webpage);
-		
-		qapply(qp, del_res);
-		qclose(qp);
 
+		qapply(qp, del_q_webpage);
+	  qclose(qp);
+		hclose(h1);
 		webpage_delete(page);
+
 		exit(EXIT_SUCCESS);
 	}
 	else{
 		printf("Unable to fetch page successfully\n");
 		exit(EXIT_FAILURE);
-  }
-	
+  }	
 }
