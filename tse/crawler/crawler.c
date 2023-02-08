@@ -64,16 +64,9 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 	return 0;
 }
 
-int main(void){
-	webpage_t* page = webpage_new("https://thayer.github.io/engs50/", 0, NULL);
-	if(webpage_fetch(page)){
-			
-		// Find all URLS and print whether they are internal or external
 
-		pagesave(page, 1, "../pages/"); // step 5 - Page Save to File
-		
-		struct queue_t* qp = qopen();
-		hashtable_t* h1 = hopen(10);
+void load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
+	if(webpage_fetch(page)){
 		
 		int pos = 0;
 		char *result;
@@ -85,10 +78,10 @@ int main(void){
 			if(IsInternalURL(result)){
 				printf(" - INTERNAL\n");
 
-			 	if (!hsearch(h1, search_url, (void*)result, strlen(result))){
-					webpage_t *tmp = webpage_new(result, 0, NULL); // Step 3 - Queue
-					qput(qp, (void *)tmp);				                 // Step 3 - Queue
- 					hput(h1, (void *)tmp, result, strlen(result)); // Step 4 - Hash
+			 	if (!hsearch(ht, search_url, (void*)result, strlen(result))){
+					webpage_t *tmp = webpage_new(result, webpage_getDepth(page)+1, NULL); // Step 3 - Queue
+					qput(q, (void *)tmp);				                 // Step 3 - Queue
+ 					hput(ht, (void *)tmp, result, strlen(result)); // Step 4 - Hash
 			 	}
 				free(result);
 			}
@@ -97,18 +90,63 @@ int main(void){
 				free(result);
 			}
 		}
+	}
+	else
+		printf("could not load page -->%s<--in load_queue_and_hashtable", webpage_getURL(page));
+}
+
+
+
+
+
+
+int main(int argc, char* argv[]){
+	if(argc != 4){
+		printf("usage: crawler <seedurl> <pagedir> <maxdepth>");
+		return 1;
+	}
+	
+	char *seedurl = argv[1];//"https://thayer.github.io/engs50/";
+	char *pagedir = argv[2];//"../pages/";
+	int maxdepth = 0;
+	if(strcmp(argv[3], "0")){
+		char **fnptr = NULL;
+		maxdepth = strtod(argv[3], fnptr);
+		if(maxdepth == 0){
+			printf("invalid integer input for depth");
+			return 2;
+		}
+	}
+	
+	
+	webpage_t* seed = webpage_new(seedurl, 0, NULL);
+	if(webpage_fetch(seed)){
+		int id = 1;
+		pagesave(seed, id, pagedir); // step 5 - Page Save to File
+		id++;
+		struct queue_t* qp = qopen();
+		hashtable_t* h1 = hopen(10);
+		load_queue_and_hashtable(h1, qp, seed);
+		
+		webpage_t *current_page = qget(qp);
+		while(current_page != NULL && webpage_getDepth(current_page) < maxdepth){
+			load_queue_and_hashtable(h1, qp, current_page);
+				pagesave(current_page, id, pagedir);
+				id++;
+				current_page = qget(qp);
+		}
 		printf("\nAfter Queue:\n");
-		qapply(qp, print_webpage);
-
-		qapply(qp, del_q_webpage);
-	  qclose(qp);
-		hclose(h1);
-		webpage_delete(page);
-
-		exit(EXIT_SUCCESS);
+		//	qapply(qp, print_webpage);
+			
+			qapply(qp, del_q_webpage);
+			qclose(qp);
+			hclose(h1);
+			webpage_delete(seed);
+			
+			exit(EXIT_SUCCESS);
 	}
 	else{
-		printf("Unable to fetch page successfully\n");
-		exit(EXIT_FAILURE);
-  }	
+			printf("Unable to fetch seed page successfully\n");
+			exit(EXIT_FAILURE);
+		}	
 }
