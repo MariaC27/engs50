@@ -64,35 +64,41 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 	return 0;
 }
 
+int32_t load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 
-void load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
-	if(webpage_fetch(page)){
-		
+	webpage_fetch(page);
+	int32_t res = 0;
+	//&& strstr(webpage_getHTML(page), "404")==NULL)){
+	
+	if (!(webpage_getDepth(page)==3 && webpage_getHTMLlen(page)==37)){
+
 		int pos = 0;
 		char *result;
-		printf("\nBefore Queue:\n");
+				printf("\nBefore Queue:\n");
 
 		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){ // Step 2 - Print I/E URLS
-			printf("Found url: %s", result);
-
+			//printf("Found url: %s", result);
 			if(IsInternalURL(result)){
-				printf(" - INTERNAL\n");
+				//printf(" - INTERNAL\n");
 
 			 	if (!hsearch(ht, search_url, (void*)result, strlen(result))){
 					webpage_t *tmp = webpage_new(result, webpage_getDepth(page)+1, NULL); // Step 3 - Queue
 					qput(q, (void *)tmp);				                 // Step 3 - Queue
- 					hput(ht, (void *)tmp, result, strlen(result)); // Step 4 - Hash
+ 					hput(ht, (void *)tmp, (void *)result, strlen(result)); // Step 4 - Hash
 			 	}
 				free(result);
 			}
 			else{
-				printf(" - EXTERNAL\n");
+				//printf(" - EXTERNAL\n");
 				free(result);
 			}
 		}
 	}
-	else
-		printf("could not load page -->%s<--in load_queue_and_hashtable", webpage_getURL(page));
+	else{
+		res = 1;
+		//		printf("could not load page -->%s<--in load_queue_and_hashtable", webpage_getURL(page));
+	}
+	return res;
 }
 
 
@@ -116,33 +122,37 @@ int main(int argc, char* argv[]){
 	
 	
 	webpage_t* seed = webpage_new(seedurl, 0, NULL);
-	if(webpage_fetch(seed)){
-		int id = 1;
-		pagesave(seed, id, pagedir); // step 5 - Page Save to File
-		id++;
-		struct queue_t* qp = qopen();
-		hashtable_t* h1 = hopen(10);
-		load_queue_and_hashtable(h1, qp, seed);
-		
-		webpage_t *current_page = qget(qp);
-		while(current_page != NULL && webpage_getDepth(current_page) <= maxdepth){
-			load_queue_and_hashtable(h1, qp, current_page);
+	
+	int id = 1;
+	//pagesave(seed, id, pagedir); // step 5 - Page Save to File
+	
+	struct queue_t* qp = qopen();
+
+	hashtable_t* h1 = hopen(10);
+	webpage_t *tmp = webpage_new(seedurl, 0, NULL); // Step 3 - Queue
+	qput(qp, (void *)tmp);                        // Step 3 - Queue                                                                                                      
+	hput(h1, (void *)tmp, (void *)seedurl, strlen(seedurl)); // Step 4 - Hash               
+
+
+	//	load_queue_and_hashtable(h1, qp, seed);
+	
+	webpage_t *current_page = qget(qp);
+	while(current_page != NULL && webpage_getDepth(current_page) <= maxdepth){
+		int32_t res = load_queue_and_hashtable(h1, qp, current_page);
+		if (res==0){
+			printf("%i\n",id);
 			pagesave(current_page, id, pagedir);
 			id++;
-			current_page = qget(qp);
 		}
-		printf("\nAfter Queue:\n");
-		//	qapply(qp, print_webpage);
-			
-			qapply(qp, del_q_webpage);
-			qclose(qp);
-			hclose(h1);
-			webpage_delete(seed);
-			
-			exit(EXIT_SUCCESS);
+		current_page = qget(qp);
 	}
-	else{
-			printf("Unable to fetch seed page successfully\n");
-			exit(EXIT_FAILURE);
-		}	
+	//	printf("\nAfter Queue:\n");
+	//	qapply(qp, print_webpage);
+	
+	qapply(qp, del_q_webpage);
+	qclose(qp);
+	hclose(h1);
+	webpage_delete(seed);
+	
+	exit(EXIT_SUCCESS);
 }
