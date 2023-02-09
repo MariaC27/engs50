@@ -96,10 +96,6 @@ void load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 }
 
 
-
-
-
-
 int main(int argc, char* argv[]){
 	if(argc != 4){
 		printf("usage: crawler <seedurl> <pagedir> <maxdepth>");
@@ -129,11 +125,11 @@ int main(int argc, char* argv[]){
 		load_queue_and_hashtable(h1, qp, seed);
 		
 		webpage_t *current_page = qget(qp);
-		while(current_page != NULL && webpage_getDepth(current_page) < maxdepth){
+		while(current_page != NULL && webpage_getDepth(current_page) <= maxdepth){
 			load_queue_and_hashtable(h1, qp, current_page);
-				pagesave(current_page, id, pagedir);
-				id++;
-				current_page = qget(qp);
+			pagesave(current_page, id, pagedir);
+			id++;
+			current_page = qget(qp);
 		}
 		printf("\nAfter Queue:\n");
 		//	qapply(qp, print_webpage);
