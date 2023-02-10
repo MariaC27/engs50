@@ -1,5 +1,5 @@
 CFLAGS = -Wall -pedantic -std=c17 -I. -g
-OFILES = queue.o hash.o webpage.o
+OFILES = queue.o hash.o webpage.o pageio.o
 
 all: $(OFILES)
 	ar cr ../../lib/libutils.a $(OFILES)
@@ -10,9 +10,9 @@ queue: ../src/queue.c
 	gcc ${CFLAGS} ../src/queue.c -c
 webpage: ../src/webpage.c
 	gcc ${CFLAGS} ../src/webpage.c -c
-
+pageio: ../src/pageio.c
+	gcc ${CLFAGS} ../src/pageio.c -c
 
 clean:
 	rm -f *.o
-	#rm -f valgrind_test1_hash.txt valgrind_test2_hash.txt valgrind_test3_hash.txt
 
