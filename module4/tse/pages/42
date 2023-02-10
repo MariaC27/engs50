@@ -1,4 +1,0 @@
-https://thayer.github.io/engs50/Examples/names-Makefile
-2
-481
-#Makefileforthe"names"programthatusesthe"bag"module.##DavidKotz-April2017CC=gccCFLAGS=-Wall-pedantic-std=c11-ggdbPROG=namesOBJS=names.obag.oreadlinep.oLIBS=-lm.PHONY:allcleanall:names#executabledependsonobjectfiles$(PROG):$(OBJS)$(CC)$(CFLAGS)$(OBJS)$(LIBS)-o$(PROG)#objectfilesdependonincludefilesnames.o:bag.hreadlinep.hbag.o:bag.hreadlinep.o:readlinep.hclean:rm-f$(PROG)rm-f*~*.orm-rf*.dSYM
