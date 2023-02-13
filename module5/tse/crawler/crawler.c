@@ -18,8 +18,11 @@
 #include <hash.h>
 #include <stdbool.h>
 
-void print_webpage(void*  pagep){
+void print_webpage_url(void*  pagep){
 	printf("%s\n", webpage_getURL(pagep));
+}
+void print_webpage_html(void*  pagep){
+	printf("%s\n", webpage_getHTML(pagep));
 }
 void del_q_webpage(void* data){ // this function tries to free up url pointer and page for every element in queue
 	webpage_delete(data);
@@ -33,8 +36,7 @@ bool search_url(void* pagep, const void* searchkeyp){
 }
 
 int32_t pagesave(webpage_t *pagep, int id, char *dirname){
-	
-	
+		
 	char *html = webpage_getHTML(pagep); //for testing purposes
 	char *url = webpage_getURL(pagep);
 	int depth = webpage_getDepth(pagep);
@@ -66,7 +68,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 
 int32_t load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 
-	webpage_fetch(page);
+	//webpage_fetch(page); // format html into queue
 	int32_t res = 0;
 	//&& strstr(webpage_getHTML(page), "404")==NULL)){
 	
@@ -74,7 +76,6 @@ int32_t load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 
 		int pos = 0;
 		char *result;
-				printf("\nBefore Queue:\n");
 
 		while ((pos = webpage_getNextURL(page, pos, &result)) > 0){ // Step 2 - Print I/E URLS
 			//printf("Found url: %s", result);
@@ -82,7 +83,10 @@ int32_t load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 				//printf(" - INTERNAL\n");
 
 			 	if (!hsearch(ht, search_url, (void*)result, strlen(result))){
+					
 					webpage_t *tmp = webpage_new(result, webpage_getDepth(page)+1, NULL); // Step 3 - Queue
+
+		 
 					qput(q, (void *)tmp);				                 // Step 3 - Queue
  					hput(ht, (void *)tmp, (void *)result, strlen(result)); // Step 4 - Hash
 			 	}
@@ -124,8 +128,7 @@ int main(int argc, char* argv[]){
 	webpage_t* seed = webpage_new(seedurl, 0, NULL);
 	
 	int id = 1;
-	//pagesave(seed, id, pagedir); // step 5 - Page Save to File
-	
+
 	struct queue_t* qp = qopen();
 
 	hashtable_t* h1 = hopen(10);
@@ -133,21 +136,22 @@ int main(int argc, char* argv[]){
 	qput(qp, (void *)tmp);                        // Step 3 - Queue                                                                                                      
 	hput(h1, (void *)tmp, (void *)seedurl, strlen(seedurl)); // Step 4 - Hash               
 
-
-	//	load_queue_and_hashtable(h1, qp, seed);
 	
 	webpage_t *current_page = qget(qp);
 	while(current_page != NULL && webpage_getDepth(current_page) <= maxdepth){
-		int32_t res = load_queue_and_hashtable(h1, qp, current_page);
-		if (res==0){
-			printf("%i\n",id);
-			pagesave(current_page, id, pagedir);
-			id++;
+		if (webpage_fetch(current_page)){ // need to fetch once
+			int32_t res = load_queue_and_hashtable(h1, qp, current_page);
+			if (res==0){
+				printf("%i\n",id);
+				webpage_fetch(current_page); // need to fetch again ?? to format html to print
+				pagesave(current_page, id, pagedir);
+				id++;
+			}
+			current_page = qget(qp);
 		}
-		current_page = qget(qp);
 	}
-	//	printf("\nAfter Queue:\n");
-	//	qapply(qp, print_webpage);
+
+	//qapply(qp, print_webpage_html);
 	
 	qapply(qp, del_q_webpage);
 	qclose(qp);

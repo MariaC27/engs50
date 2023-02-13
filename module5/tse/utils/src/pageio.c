@@ -47,7 +47,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 	return 0;
 }
 
-webpage_t *pageload(int id, char *dirnm){
+webpage_t *pageload(int id, char *dirname){
 	
 	//get a string of dirname and id
 	char new_id[10];
@@ -62,11 +62,18 @@ webpage_t *pageload(int id, char *dirnm){
 		printf("Could not open file\n");
 		exit(EXIT_FAILURE);
 	}
-
-	fgets(url, 1000, fp); //unsure if these are right
+	
+	char url[1000];
+	char depth[5];
+	int int_depth;
+	
+	fgets(url, 1000, fp); 
 	fgets(depth, 5, fp);
-	webpage_t *newpage = webpage_new(url, depth, NULL);
-
+	sscanf(depth, "%d", &int_depth);
+	
+	webpage_t *newpage = webpage_new(url, int_depth, NULL); // need to copy over html
+	
+	free(ch1);
 	fclose(fp);
-	return webpage_t;
+	return newpage;
 }

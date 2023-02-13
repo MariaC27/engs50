@@ -963,7 +963,7 @@ bool webpage_fetch(webpage_t *page) {
   do {
     res = curl_easy_perform(curl_handle);
 #ifndef NOSLEEP // CS50 students: please don't turn off the sleep!
-    sleep(1);   // sleep one second between fetches, to lighten load on server
+    sleep(0.5);   // sleep one second between fetches, to lighten load on server
 #endif
   } while (res != CURLE_OK && ++tries < MAX_TRY);
 
