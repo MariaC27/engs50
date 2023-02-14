@@ -56,12 +56,15 @@ webpage_t *pageload(int id, char *dirname){
   strcat(ch1, new_id); //concatenate dir and id together into ch1                                                         
                                                                                                                           
   //open file to read from                                                                                                
-  FILE *fp = fopen(ch1, "r");                                                                                             
+
+	//if((*fp = fopen(ch1, "r")) == NULL){ exit(EXIT_FAILURE);}
+	FILE *fp = fopen(ch1, "r");                                                                                             
   if (fp == NULL) {                                                                                                       
     printf("Could not open file\n");                                                                                      
     exit(EXIT_FAILURE);                                                                                                   
-  }                                                                                                                       
-                                                                                                                          
+  } 
+
+	
   char url[1000];                                                                                                         
 	char depth[5];                                                                                                          
   int int_depth;                                                                                                          
@@ -84,8 +87,8 @@ webpage_t *pageload(int id, char *dirname){
 	sscanf(html_len, "%d", &int_html_len); // convert string to int
 	
 
-	char *html = malloc(int_html_len);
-
+	char *html = malloc(int_html_len+1);
+	
 	ch = fgetc(fp);
 	counter = 0;
 	for (; !feof(fp); ch = fgetc(fp), counter++){
@@ -95,12 +98,12 @@ webpage_t *pageload(int id, char *dirname){
 	
 	
   webpage_t *newpage = webpage_new(url, int_depth, html); // need to copy over html                                       
-	
+
   free(ch1);
   fclose(fp);
 	
   return newpage;                                                                                                         
-	}  */
+	}*/
 
 
 int main(void ){
@@ -113,7 +116,7 @@ int main(void ){
 	 
 	int res = 1;
 
-	/* Tests if all components are the same in both the read and loaded files */
+	/* Tests if all components are the same in both the read and loaded files */ // 2 errors
 	if (strcmp(webpage_getURL(tmp), webpage_getURL(tmp2)) != 0){ 
 		  res = 0;
 	}
@@ -125,7 +128,7 @@ int main(void ){
 	}
 	if (strcmp(webpage_getHTML(tmp), webpage_getHTML(tmp2))){
 			res = 0;
-	}
+			}
 	
 	webpage_delete(tmp);
 	webpage_delete(tmp2);

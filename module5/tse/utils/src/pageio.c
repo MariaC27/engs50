@@ -85,7 +85,7 @@ webpage_t *pageload(int id, char *dirname){
 	sscanf(html_len, "%d", &int_html_len); // convert string to int
 	
 
-	char *html = malloc(int_html_len);
+	char *html = malloc(int_html_len+1);
 
 	ch = fgetc(fp);
 	counter = 0;
