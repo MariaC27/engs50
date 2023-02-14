@@ -1,0 +1,125 @@
+==14741== Memcheck, a memory error detector
+==14741== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==14741== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==14741== Command: pageio_test
+==14741== Parent PID: 14740
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x10B6E2: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741==  Address 0x5a9a8d6 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x10B726: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741==  Address 0x5a9a8d6 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741== 
+==14741== Invalid read of size 1
+==14741==    at 0x484ED24: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x109ACC: webpage_new (webpage.c:76)
+==14741==    by 0x10B746: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741==  Address 0x5a9a8d6 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x484EA5E: strcat (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B3D6: pagesave (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109751: main (pageio_test.c:110)
+==14741==  Address 0x5a9a9fb is 0 bytes after a block of size 11 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B3AC: pagesave (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109751: main (pageio_test.c:110)
+==14741== 
+==14741== Syscall param openat(filename) points to unaddressable byte(s)
+==14741==    at 0x4A486EB: open (open64.c:41)
+==14741==    by 0x49C0135: _IO_file_open (fileops.c:188)
+==14741==    by 0x49C0491: _IO_file_fopen@@GLIBC_2.2.5 (fileops.c:280)
+==14741==    by 0x49B372D: __fopen_internal (iofopen.c:75)
+==14741==    by 0x49B372D: fopen@@GLIBC_2.2.5 (iofopen.c:86)
+==14741==    by 0x10B3EC: pagesave (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109751: main (pageio_test.c:110)
+==14741==  Address 0x5a9a9fb is 0 bytes after a block of size 11 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B3AC: pagesave (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109751: main (pageio_test.c:110)
+==14741== 
+==14741== Invalid read of size 1
+==14741==    at 0x484ED24: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x49AADB0: __vfprintf_internal (vfprintf-internal.c:1517)
+==14741==    by 0x4994749: fprintf (fprintf.c:32)
+==14741==    by 0x10B48A: pagesave (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109751: main (pageio_test.c:110)
+==14741==  Address 0x5a9a8d6 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x484EA5E: strcat (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B560: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741==  Address 0x5a9ccab is 0 bytes after a block of size 11 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B527: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x10B6E2: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741==  Address 0x5a9fa26 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741== 
+==14741== Invalid write of size 1
+==14741==    at 0x10B726: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741==  Address 0x5a9fa26 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741== 
+==14741== Invalid read of size 1
+==14741==    at 0x484ED24: strlen (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x109ACC: webpage_new (webpage.c:76)
+==14741==    by 0x10B746: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741==  Address 0x5a9fa26 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741== 
+==14741== Invalid read of size 1
+==14741==    at 0x484FBE8: strcmp (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x109811: main (pageio_test.c:125)
+==14741==  Address 0x5a9a8d6 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109735: main (pageio_test.c:108)
+==14741== 
+==14741== Invalid read of size 1
+==14741==    at 0x484FBF0: strcmp (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x109811: main (pageio_test.c:125)
+==14741==  Address 0x5a9fa26 is 0 bytes after a block of size 2,774 alloc'd
+==14741==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==14741==    by 0x10B69F: pageload (in /thayerfs/home/f006jnn/engs50/git/engs50/module5/tse/test/pageio_test)
+==14741==    by 0x109765: main (pageio_test.c:112)
+==14741== 
+==14741== 
+==14741== HEAP SUMMARY:
+==14741==     in use at exit: 0 bytes in 0 blocks
+==14741==   total heap usage: 1,327 allocs, 1,327 frees, 137,466 bytes allocated
+==14741== 
+==14741== All heap blocks were freed -- no leaks are possible
+==14741== 
+==14741== For lists of detected and suppressed errors, rerun with: -s
+==14741== ERROR SUMMARY: 13 errors from 12 contexts (suppressed: 0 from 0)
