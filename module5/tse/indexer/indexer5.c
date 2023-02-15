@@ -155,47 +155,28 @@ int main(int argc, char *argv[]){
 	for(int doc_id = 1; doc_id <= maxdocument; doc_id++){
 		printf("document id: %i\n", doc_id);
 		page = pageload(doc_id, "../pages/");
-		
 		//char *path = "./testout.txt";
 		/*FILE *out;
 			if((out = fopen(path, "w")) == NULL){printf("Could not open file."); exit(EXIT_FAILURE);}*/
-		
 		int pos = 0;
 		char *word;
-		
 		while((pos = webpage_getNextWord(page, pos, &word)) > 0){
 			if(normalize_word(word)==0){ // Normalize word here
 				wordcount_t *found_word = hsearch(h1, wordsearch, (void *)word, strlen(word)); // hash search
-				//	fprintf(out, "%s\n", word); // print to file
 				printf("%s\n", word);
 				if(found_word == NULL){//NOT FOUND IN HASH TABLE
-					//printf("word not found in hash table\n");
-					//tmp->word_data = malloc(strlen(word)+1);    
 					char *tempword = malloc(strlen(word+1));
-					//printf("1\n");
 					wordcount_t *tmp = new_wordcount(tempword);
-					//printf("2\n");
-					//(wordcount_t *)malloc(sizeof(wordcount_t)); // malloc struct
-					//strcpy(tmp->word_data, word);
-					//tmp->count = 1;
-					//printf("qput result: %i\n", put_entry(tmp->q, doc_id, 1));//go into the queue in tmp, and place a new entry into it with the doc_d and count 1
 					put_entry(tmp->q, doc_id, 1);
-					//printf("3\n");
 					hput(h1, (void *)tmp, (void *)word, strlen(word));//put tmp into the has table
-					//printf("4\n");
 				}
 				else{//FOUND IN HASH TABLE
-					//printf("\n\nword found in hash table\n\n\n");
-					//found_word->count++; // if duplicate -->> increase word count
 					qentry_t *found_entry = qsearch(found_word->q, docsearch, &doc_id);
-					if(found_entry != NULL){
-						//printf("found entry, increasing count\n");
-						found_entry->count++;
+					if(found_entry != NULL){//entry already exists
+						found_entry->count++;//increase its count
 					}
-					else{
-						//printf("entry not found, new entry created");
-						//printf("qput result: %i\n", put_entry(found_word->q, doc_id, 1));//go into the queue in found entry, and place a new entry into it with the doc_d and count 1
-						put_entry(found_word->q, doc_id, 1);
+					else{//entry does not yet exist
+						put_entry(found_word->q, doc_id, 1);//malloc new entry, count 1 and put it in the queue associated with word
 					}
 				}
 			}
