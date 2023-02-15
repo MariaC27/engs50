@@ -56,6 +56,16 @@ void close_wordcount_queue(void *w){
 	qclose(hehehe->q);
 }
 
+void free_wordcount_queue_data(void *w){
+	wordcount_t *wc = w;
+	qapply(wc->q, free);
+}
+
+/*void free_qdata(void *qep){
+	qentry *qe = qep;
+	free(
+}*/
+		
 bool docsearch(void* entry, const void *keyp){
 	qentry_t *e = entry;
 
@@ -195,6 +205,7 @@ int main(int argc, char *argv[]){
 	}
 	happly(h1, hsumwords);//sum the words frfr
 	printf("Sum word count after hash: %i\n", word_total);
+	happly(h1, free_wordcount_queue_data);
 	happly(h1, close_wordcount_queue);
 	happly(h1, del_hash_word);
 	hclose(h1);
