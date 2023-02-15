@@ -12,6 +12,8 @@ webpage: ../src/webpage.c
 	gcc ${CFLAGS} ../src/webpage.c -c
 pageio: ../src/pageio.c
 	gcc ${CLFAGS} ../src/pageio.c -c
+indexio: ../src/indexio.c
+	gcc ${CFLAGS} ../src/indexio.c -c
 
 clean:
 	rm -f *.o

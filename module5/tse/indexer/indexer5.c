@@ -21,11 +21,13 @@
 
 static int word_total;
 
+//struct stored in hash
 typedef struct wordcount{
 	char *word_data;
 	queue_t *q;
 }wordcount_t;
 
+//struct storied in queue - "entry"
 typedef struct qentry{
 	int id;
 	int count;
@@ -41,7 +43,7 @@ wordcount_t *new_wordcount(char *word){
 	return w;
 }
 
-//MALLOC a new entry, specify values, place it into the queue
+//MALLOC a new entry, specify values, place it into the queue - assumes queue is already open
 int put_entry(queue_t *queue_toput, int eyedee, int cnt){
 	qentry_t *entry = malloc(sizeof(qentry_t));
 	entry->id = eyedee;
@@ -49,6 +51,8 @@ int put_entry(queue_t *queue_toput, int eyedee, int cnt){
 	int result = qput(queue_toput, (void*)entry);
 	return result;
 }
+
+
 
 //takes in a wordcount structure and closes the queue stored inside of it. used for happly()!!!!!
 void close_wordcount_queue(void *w){
@@ -61,11 +65,8 @@ void free_wordcount_queue_data(void *w){
 	qapply(wc->q, free);
 }
 
-/*void free_qdata(void *qep){
-	qentry *qe = qep;
-	free(
-}*/
-		
+
+// checks if document ID is already in that entry (where entry in queue)		
 bool docsearch(void* entry, const void *keyp){
 	qentry_t *e = entry;
 
@@ -76,11 +77,8 @@ bool docsearch(void* entry, const void *keyp){
 
 
 char *wordcount_getWordData(wordcount_t *w){return w ? w->word_data   : NULL; }
-  //char *ret = w->word_data;
-  //if(ret == NULL)
-		// return "";
-  //return ret;
-	//}
+
+
 
 //search function for hsearch
 bool wordsearch(void* elementp, const void* searchkeyp){
@@ -134,7 +132,7 @@ void hsumwords(void *w){
 }
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]){ //takes an argument from the command line
 	word_total = 0;
 	if(argc !=2){
 		printf("Usage: indexer <id>");
