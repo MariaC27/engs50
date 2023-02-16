@@ -15,26 +15,30 @@
 #include <string.h>
 #include "hash.h"
 #include "queue.h"
+#include "indexio.h"
 
+static FILE *fp;
 
-typedef struct wordcount{
-	char *word_data;
-	queue_t *q;
-}wordcount_t;
-
-typedef struct qentry{
-	int id;
-	int count;
-}qentry_t;
 
 void get_word_data(void* data){
 	// get doc and counts
 	wordcount_t *tmp = data;
 	char *theword = tmp->word_data;
+	fprintf(fp, "%s ", theword);
+	queue_t* q = tmp->q;
+
+	qentry_t* entry = qget(q); // gets entry and removes it from the queue
 	
-	printf("data: %s\n", theword);
+	while(entry != NULL){
+			fprintf(fp, "%d ", entry->id);
+			fprintf(fp, "%d ", entry->count);
+			entry = qget(q);
+		}
+
+	fprintf(fp, "%s\n", " ");
 	
-	//fprintf(fp, "%s", theword->word_data);
+	//printf("data: %s\n", theword);
+ 
 }
 
 // take a hash table (index) as argument and write info to file
@@ -43,16 +47,15 @@ int32_t indexsave(hashtable_t *h1){
 	// each line has word to start, then doc ID + count repeated on line
 	// name of file: indexnm
 	// return 0 or 1 based on success
-	FILE *fp = fopen("indexnm", "w");
-	if (fp == NULL){
-		printf("Could not open file\n");
-		return 1;
-  }
+	
+	if((fp = fopen("./indexnm", "w")) == NULL){ printf("Could not open file\n"); exit(EXIT_FAILURE);}
 
+	fprintf(fp, "%s", "Hello");
 	//use apply - for all words in hash,  write word and doc + counts to line
 	happly(h1, get_word_data);
+
 	fclose(fp);
-	return 0;
+	exit(EXIT_SUCCESS);
 }
 
 

@@ -1,5 +1,5 @@
 /* indexio_test.c --- 
- * 
+ *      
  * 
  * Author: Maria
  * Created: Wed Feb 15 19:30:02 2023 (-0500)
@@ -21,24 +21,11 @@
 
 static int word_total;
 
-//struct stored in hash
-typedef struct wordcount{
-	char *word_data;
-	queue_t *q;
-}wordcount_t;
-
-//struct storied in queue - "entry"
-typedef struct qentry{
-	int id;
-	int count;
-}qentry_t;
-
 //MALLOC a new wordcount, give it word_data and give it a new queue, return a pointer to the structure
 wordcount_t *new_wordcount(char *word){
 	wordcount_t *w = malloc(sizeof(wordcount_t));
-	//w->word_data = "";
-	//strcpy(w->word_data, word);
-	w->word_data = word;
+	w->word_data = malloc(strlen(word)+1);
+	strcpy(w->word_data, word);
 	w->q = qopen();
 	return w;
 }
@@ -131,6 +118,9 @@ void hsumwords(void *w){
 		qapply(wc->q, qsumwords);
 }
 
+void h_words(void *w){                                                                                                                                        wordcount_t *wc = w;                                                                                                                                        printf("%s\n",wc->word_data);                                                                                                                            
+} 
+
 
 int main(int argc, char *argv[]){ //takes an argument from the command line
 	word_total = 0;
@@ -163,8 +153,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 				wordcount_t *found_word = hsearch(h1, wordsearch, (void *)word, strlen(word)); // hash search
 				//printf("%s\n", word);
 				if(found_word == NULL){//NOT FOUND IN HASH TABLE
-					char *tempword = malloc(strlen(word+1));
-					wordcount_t *tmp = new_wordcount(tempword);
+					wordcount_t *tmp = new_wordcount(word);
 					put_entry(tmp->q, doc_id, 1);
 					hput(h1, (void *)tmp, (void *)word, strlen(word));//put tmp into the has table
 				}

@@ -1,5 +1,5 @@
 /* indexer5.c --- 
- * 
+ *  
  * 
  * Author: Miles B. Hudgins
  * Created: Mon Feb 13 13:30:02 2023 (-0500)
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 	happly(h1, hsumwords);//sum the words frfr
 	printf("Sum word count after hash: %i\n", word_total);
 
-	happly(h1, h_words);
+	//	happly(h1, h_words);
 	
 	happly(h1, free_wordcount_queue_data);
 	happly(h1, close_wordcount_queue);
