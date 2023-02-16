@@ -40,4 +40,4 @@ int32_t indexsave(hashtable_t *h1);
 
  */
 
-hashtable_t* indexload(void);
+//hashtable_t* indexload(void);

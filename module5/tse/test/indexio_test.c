@@ -1,6 +1,6 @@
 /* indexer5.c --- 
- *      
- * 
+ *                  
+ *     
  * Author: Miles B. Hudgins
  * Created: Mon Feb 13 13:30:02 2023 (-0500)
  * Version: 1.0
@@ -148,7 +148,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 		}
 	}
 	webpage_t* page;
-	for(int doc_id = 1; doc_id <= maxdocument; doc_id++){
+ 	for(int doc_id = 1; doc_id <= maxdocument; doc_id++){
  		printf("document id: %i\n", doc_id);
 		page = pageload(doc_id, "../pages/");
 		//char *path = "./testout.txt";
