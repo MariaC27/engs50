@@ -76,6 +76,7 @@ int main(void){
 
 		if(normalize_word(word)==0){ // Normalize word here
 			wordcount_t *found_word = hsearch(h1, wordsearch, (void *)word, strlen(word)); // hash search
+			
 			fprintf(out, "%s\n", word); // print to file
 
 			if(found_word == NULL){

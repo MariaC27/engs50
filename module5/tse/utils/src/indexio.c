@@ -20,25 +20,25 @@
 static FILE *fp;
 
 
-void get_word_data(void* data){
-	// get doc and counts
+void get_word_data(void* data){ // get doc and counts
 	wordcount_t *tmp = data;
-	char *theword = tmp->word_data;
-	fprintf(fp, "%s ", theword);
-	queue_t* q = tmp->q;
+	fprintf(fp, "%s ", tmp->word_data);
 
-	qentry_t* entry = qget(q); // gets entry and removes it from the queue
+	qentry_t* entry = qget(tmp->q); // gets entry and removes it from the queue
 	
 	while(entry != NULL){
 			fprintf(fp, "%d ", entry->id);
 			fprintf(fp, "%d ", entry->count);
-			entry = qget(q);
+			
+			//			qapply(tmp->q, free);
+			free(entry);
+			entry = qget(tmp->q);
 		}
 
 	fprintf(fp, "%s\n", " ");
-	
-	//printf("data: %s\n", theword);
- 
+
+	qclose(tmp->q);
+	//free(tmp);
 }
 
 // take a hash table (index) as argument and write info to file
@@ -50,7 +50,6 @@ int32_t indexsave(hashtable_t *h1){
 	
 	if((fp = fopen("./indexnm", "w")) == NULL){ printf("Could not open file\n"); exit(EXIT_FAILURE);}
 
-	fprintf(fp, "%s", "Hello");
 	//use apply - for all words in hash,  write word and doc + counts to line
 	happly(h1, get_word_data);
 
@@ -62,4 +61,5 @@ int32_t indexsave(hashtable_t *h1){
 
 // load info from file and back into hash table (index)
 hashtable_t* indexload(void){
+	return NULL;
 }

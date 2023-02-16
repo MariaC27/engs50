@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo $(valgrind --leak-check=full indexer 3)
+echo $(valgrind --leak-check=full indexer5 3)
 
