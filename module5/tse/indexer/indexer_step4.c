@@ -34,11 +34,10 @@ typedef struct qentry{
 }qentry_t;
 
 //MALLOC a new wordcount, give it word_data and give it a new queue, return a pointer to the structure
-wordcount_t *new_wordcount(char *word){
+wordcount_t *new_wordcount(char *some_word){
 	wordcount_t *w = malloc(sizeof(wordcount_t));
-	//w->word_data = "";
-	//strcpy(w->word_data, word);
-	w->word_data = word;
+	w->word_data = malloc(strlen(some_word)+1);
+	strcpy(w->word_data, some_word);
 	w->q = qopen();
 	return w;
 }
@@ -131,11 +130,16 @@ void hsumwords(void *w){
 		qapply(wc->q, qsumwords);
 }
 
+void h_words(void *w){
+	wordcount_t *wc = w;
+	printf("%s\n",wc->word_data);
+}
+
 
 int main(int argc, char *argv[]){ //takes an argument from the command line
 	word_total = 0;
 	if(argc !=2){
-		printf("Usage: indexer <id>");
+		printf("Usage: indexer <id>\n");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -145,13 +149,13 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 		char **fnptr = NULL;
 		maxdocument = strtod(argv[1], fnptr);
 		if(maxdocument ==0){
-			printf("invalid integer input for document id");
+			printf("invalid integer input for document id\n");
 			exit(EXIT_FAILURE);
 		}
 	}
 	webpage_t* page;
 	for(int doc_id = 1; doc_id <= maxdocument; doc_id++){
-		printf("document id: %i\n", doc_id);
+	printf("document id: %i\n", doc_id);
 		page = pageload(doc_id, "../pages/");
 		//char *path = "./testout.txt";
 		/*FILE *out;
@@ -161,10 +165,10 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 		while((pos = webpage_getNextWord(page, pos, &word)) > 0){
 			if(normalize_word(word)==0){ // Normalize word here
 				wordcount_t *found_word = hsearch(h1, wordsearch, (void *)word, strlen(word)); // hash search
-				printf("%s\n", word);
+				// printf("%s\n", word); // prints words on screen
 				if(found_word == NULL){//NOT FOUND IN HASH TABLE
-					char *tempword = malloc(strlen(word+1));
-					wordcount_t *tmp = new_wordcount(tempword);
+					//char *tempword = malloc(strlen(word+1));
+					wordcount_t *tmp = new_wordcount(word);
 					put_entry(tmp->q, doc_id, 1);
 					hput(h1, (void *)tmp, (void *)word, strlen(word));//put tmp into the has table
 				}
@@ -184,6 +188,9 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 	}
 	happly(h1, hsumwords);//sum the words frfr
 	printf("Sum word count after hash: %i\n", word_total);
+
+	happly(h1, h_words);
+	
 	happly(h1, free_wordcount_queue_data);
 	happly(h1, close_wordcount_queue);
 	happly(h1, del_hash_word);

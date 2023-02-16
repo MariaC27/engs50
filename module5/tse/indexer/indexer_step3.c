@@ -68,7 +68,7 @@ int main(void){
 
 	char *path = "./testout.txt";
 	FILE *out;
-	if((out = fopen(path, "w")) == NULL){printf("Could not open file."); exit(EXIT_FAILURE);}
+	if((out = fopen(path, "w")) == NULL){printf("Could not open file.\n"); exit(EXIT_FAILURE);}
 
 	int pos = 0;
 	char *word;
