@@ -22,7 +22,7 @@
 static int word_total;
 
 //struct stored in hash
-typedef struct wordcount{
+/*typedef struct wordcount{
 	char *word_data;
 	queue_t *q;
 }wordcount_t;
@@ -31,10 +31,10 @@ typedef struct wordcount{
 typedef struct qentry{
 	int id;
 	int count;
-}qentry_t;
+	}qentry_t; */
 
 //MALLOC a new wordcount, give it word_data and give it a new queue, return a pointer to the structure
-wordcount_t *new_wordcount(char *some_word){
+/*wordcount_t *new_wordcount(char *some_word){
 	wordcount_t *w = malloc(sizeof(wordcount_t));
 	w->word_data = malloc(strlen(some_word)+1);
 	strcpy(w->word_data, some_word);
@@ -49,7 +49,7 @@ int put_entry(queue_t *queue_toput, int eyedee, int cnt){
 	entry->count = cnt;
 	int result = qput(queue_toput, (void*)entry);
 	return result;
-}
+	}*/
 
 
 

@@ -11,15 +11,9 @@
 
 
 
-typedef struct wordcount{                                                                                                                                                                     
-  char *word_data;                                                                                                                                                                            
-  queue_t *q;                                                                                                                                                                                 
-}wordcount_t;                                                                                                                                                                                 
+typedef struct wordcount{                                                                                                                                               char *word_data;                                                                                                                                                      queue_t *q;                                                                                                                                                         }wordcount_t;                                                                                                                                                                                 
                                                                                                                                                                                               
-typedef struct qentry{                                                                                                                                                                        
-  int id;                                                                                                                                                                                     
-  int count;                                                                                                                                                                                  
-}qentry_t;  
+typedef struct qentry{                                                                                                                                                  int id;                                                                                                                                                               int count;                                                                                                                                                          }qentry_t;  
 
 /*
 	indexsave -- takes an index (hashtable) with info about words and writes to a file which has one line for each word in the index.
@@ -28,16 +22,18 @@ typedef struct qentry{
 
  */
 
-int32_t indexsave(hashtable_t *h1);
+
+wordcount_t *new_wordcount(char *some_word);
+int put_entry(queue_t *queue_toput, int eyedee, int cnt);
 
 
+//MALLOC a new entry, specify values, place it into the queue - assumes queue is already open                                                               
+int32_t indexsave(hashtable_t *h1, char *filepath);
 
 
 /*
-
 	indexload -- takes a file of the format listed above and loads the content into an index (hashtable)
 	             Assumes the file is in the current directory and named "indexnm"
-
  */
 
-//hashtable_t* indexload(void);
+hashtable_t* indexload(char *filepath);

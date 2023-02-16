@@ -110,7 +110,7 @@ int main(void ){
 	
 	webpage_t *tmp = pageload(1, "../pages/");
 	
-	pagesave(tmp, 0, "../pages/"); // Save file to 0
+	pagesave(tmp, 0, "./"); // Save file to 0
 	
 	webpage_t *tmp2 = pageload(0, "../pages/"); // Load same file
 	 

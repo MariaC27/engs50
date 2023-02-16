@@ -1,6 +1,6 @@
 /* indexer5.c --- 
- *                  
- *     
+ *                                                 
+ *      
  * Author: Miles B. Hudgins
  * Created: Mon Feb 13 13:30:02 2023 (-0500)
  * Version: 1.0
@@ -23,7 +23,7 @@ static int word_total;
 
 
 //MALLOC a new wordcount, give it word_data and give it a new queue, return a pointer to the structure
-wordcount_t *new_wordcount(char *some_word){
+/*wordcount_t *new_wordcount(char *some_word){
 	wordcount_t *w = malloc(sizeof(wordcount_t));
 	w->word_data = malloc(strlen(some_word)+1);
 	strcpy(w->word_data, some_word);
@@ -38,20 +38,21 @@ int put_entry(queue_t *queue_toput, int eyedee, int cnt){
 	entry->count = cnt;
 	int result = qput(queue_toput, (void*)entry);
 	return result;
-}
+	}*/
 
 
 
 //takes in a wordcount structure and closes the queue stored inside of it. used for happly()!!!!!
-void close_wordcount_queue(void *w){
-	wordcount_t *hehehe = w;
-	qclose(hehehe->q);
-}
-
-void free_wordcount_queue_data(void *w){
+void close_wordcount(void *w){
 	wordcount_t *wc = w;
 	qapply(wc->q, free);
+	qclose(wc->q);
 }
+
+/*void free_wordcount_queue_data(void *w){
+	wordcount_t *wc = w;
+	
+	}*/
 
 
 // checks if document ID is already in that entry (where entry in queue)		
@@ -154,7 +155,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 		//char *path = "./testout.txt";
 	 	/*FILE *out;
 			if((out = fopen(path, "w")) == NULL){printf("Could not open file."); exit(EXIT_FAILURE);}*/
-		int pos = 0;
+ 		int pos = 0;
 		char *word;
 		while((pos = webpage_getNextWord(page, pos, &word)) > 0){
 			if(normalize_word(word)==0){ // Normalize word here
@@ -185,11 +186,17 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 	//happly(h1, h_words);
 
 	indexsave(h1);
-	 
-	happly(h1, free_wordcount_queue_data);
-	happly(h1, close_wordcount_queue);
+	hashtable_t *h2 = indexload(); 
+	//happly(h2, h_words);
+
+
+	happly(h1, close_wordcount);
 	happly(h1, del_hash_word);
 	hclose(h1);
+
+	happly(h2, close_wordcount);
+	happly(h2, del_hash_word);
+	hclose(h2);
 	//fclose(out);
 	
 	exit(EXIT_SUCCESS);

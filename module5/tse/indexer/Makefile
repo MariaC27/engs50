@@ -1,6 +1,9 @@
 CFLAGS=-Wall -pedantic -std=c11 -I../utils/src -L../lib -g
 LIBS=-lutils -lcurl
 
+indexer: indexer.c
+	gcc $(CFLAGS) indexer.c $(LIBS) -o $@
+
 indexer5: indexer_step5.c
 	gcc $(CFLAGS) indexer_step5.c $(LIBS) -o $@
 
