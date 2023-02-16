@@ -13,36 +13,50 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <hash.h>
+#include "hash.h"
+#include "queue.h"
 
-int main(void){
-	printf("Hello\n");
-}
 
-void get_word_data(void *w){
-	wordcount_t *theword = w;
+typedef struct wordcount{
+	char *word_data;
+	queue_t *q;
+}wordcount_t;
+
+typedef struct qentry{
+	int id;
+	int count;
+}qentry_t;
+
+void get_word_data(void* data){
 	// get doc and counts
+	wordcount_t *tmp = data;
+	char *theword = tmp->word_data;
+	
+	printf("data: %s\n", theword);
+	
+	//fprintf(fp, "%s", theword->word_data);
 }
 
 // take a hash table (index) as argument and write info to file
-int indexsave(hastable_t *h1){
+int32_t indexsave(hashtable_t *h1){
 	// one line for each word in the index
 	// each line has word to start, then doc ID + count repeated on line
 	// name of file: indexnm
 	// return 0 or 1 based on success
-
 	FILE *fp = fopen("indexnm", "w");
-
 	if (fp == NULL){
 		printf("Could not open file\n");
 		return 1;
   }
 
 	//use apply - for all words in hash,  write word and doc + counts to line
+	happly(h1, get_word_data);
+	fclose(fp);
+	return 0;
 }
 
 
 
 // load info from file and back into hash table (index)
-hastable_t* indexload(void){
+hashtable_t* indexload(void){
 }
