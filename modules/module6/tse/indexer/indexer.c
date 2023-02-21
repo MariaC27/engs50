@@ -1,6 +1,6 @@
 /* indexer5.c --- 
- *                                                  
- *      
+ *                                                        
+ *       
  * Author: Miles B. Hudgins
  * Created: Mon Feb 13 13:30:02 2023 (-0500)
  * Version: 1.0
@@ -128,6 +128,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 			
 			int pos = 0;
 			char *word;
+			
 			while((pos = webpage_getNextWord(page, pos, &word)) > 0){
 				if(normalize_word(word)==0){ // Normalize word here
 					wordcount_t *found_word = hsearch(h1, wordsearch, (void *)word, strlen(word)); // hash search
@@ -140,7 +141,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 					else{//FOUND IN HASH TABLE
 						qentry_t *found_entry = qsearch(found_word->q, docsearch, &doc_id);
 						if(found_entry != NULL){//entry already exists
-							found_entry->count++;//increase its count
+						found_entry->count++;//increase its count
 						}
 						else{//entry does not yet exist
 							put_entry(found_word->q, doc_id, 1);//malloc new entry, count 1 and put it in the queue associated with word
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 			}
 			webpage_delete(page);
 		}
-		doc_id++;
+	  doc_id++;
 	}
 	happly(h1, hsumwords);//sum the words frfr
 	printf("Sum word count after hash: %i\n", word_total);

@@ -52,8 +52,7 @@ webpage_t *pageload(int id, char *dirname){
   //get a string of dirname and id                                                                                        
   char new_id[10];                                                                                                        
   sprintf(new_id, "%d", id); //turns id into a string                                                                     
-  char *ch1 = malloc(strlen(dirname)+2);                                                                                  
-  strcpy(ch1, dirname);                                                                                                   
+  char *ch1 = malloc(strlen(dirname) + strlen(new_id) + 1);                                                                        strcpy(ch1, dirname);                                                                                                   
   strcat(ch1, new_id); //concatenate dir and id together into ch1                                                         
                                                                                                                           
   //open file to read from                                                                                                
@@ -76,7 +75,7 @@ webpage_t *pageload(int id, char *dirname){
 	for (; ch != '\n'; ch = fgetc(fp), counter++){
 		url[counter] = ch;
 	}
-	url[counter] = '\0';
+	url[counter-1] = '\0';
 	
 	//fgets(url, 1000, fp);
   fgets(depth, 5, fp);                                                                                                    
@@ -92,8 +91,9 @@ webpage_t *pageload(int id, char *dirname){
 	for (; !feof(fp); ch = fgetc(fp), counter++){
 		html[counter] = ch;
 	}
-	html[int_html_len] = '\0';
-	
+	html[counter-1] = '\0';
+
+	//printf("html_len: %i, counter: %i ", int_html_len, counter);
 	
   webpage_t *newpage = webpage_new(url, int_depth, html); // need to copy over html                                       
 	

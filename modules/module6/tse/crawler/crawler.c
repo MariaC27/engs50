@@ -68,7 +68,7 @@ int32_t pagesave(webpage_t *pagep, int id, char *dirname){
 
 int32_t load_queue_and_hashtable(hashtable_t *ht, queue_t *q, webpage_t *page){
 
-	//webpage_fetch(page); // format html into queue
+	webpage_fetch(page); // format html into queue
 	int32_t res = 0;
 	//&& strstr(webpage_getHTML(page), "404")==NULL)){
 	
@@ -139,7 +139,7 @@ int main(int argc, char* argv[]){
 	
 	webpage_t *current_page = qget(qp);
 	while(current_page != NULL && webpage_getDepth(current_page) <= maxdepth){
-		if (webpage_fetch(current_page)){ // need to fetch once
+		//if (webpage_fetch(current_page)){ // need to fetch once
 			int32_t res = load_queue_and_hashtable(h1, qp, current_page);
 			if (res==0){
 				printf("%i\n",id);
@@ -148,7 +148,7 @@ int main(int argc, char* argv[]){
 				id++;
 			}
 			current_page = qget(qp);
-		}
+			//}
 	}
 
 	//qapply(qp, print_webpage_html);
