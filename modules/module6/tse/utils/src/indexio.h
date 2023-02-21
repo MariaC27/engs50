@@ -11,9 +11,16 @@
 
 
 
-typedef struct wordcount{                                                                                                                                               char *word_data;                                                                                                                                                      queue_t *q;                                                                                                                                                         }wordcount_t;                                                                                                                                                                                 
-                                                                                                                                                                                              
-typedef struct qentry{                                                                                                                                                  int id;                                                                                                                                                               int count;                                                                                                                                                          }qentry_t;  
+typedef struct wordcount{
+	char *word_data;
+	queue_t *q;
+} wordcount_t;
+
+
+typedef struct qentry{
+	int id;
+	int count;
+} qentry_t;  
 
 /*
 	indexsave -- takes an index (hashtable) with info about words and writes to a file which has one line for each word in the index.
