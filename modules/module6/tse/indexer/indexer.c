@@ -121,7 +121,6 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 	webpage_t* page;
 
 	while ((dir = readdir(d)) != NULL) {
-	//for(int i = 0; i <4; i++){
 	//sscanf(dir->d_name, "%d", &doc_id); // this could be used to pull the file name directly
 		if ( doc_id > 0){
 			//printf("document id: %i\n", doc_id);
