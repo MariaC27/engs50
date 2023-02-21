@@ -111,6 +111,7 @@ void qsumwords(void *d){
   qentry_t *entry = d;
   if(entry != NULL)
     word_total += entry->count;
+	//printf("doc_ids: %i\n", entry->id);
 } 
 
 //for happly
@@ -187,6 +188,7 @@ int main(int argc, char *argv[]){ //takes an argument from the command line
 
 	indexsave(h1, "./indexnm");
 	hashtable_t *h2 = indexload("./indexnm"); 
+
 	happly(h2, h_words);
 
 

@@ -1,6 +1,6 @@
 /* query.c --- prompt to get query from user
- * 
- * 
+ *  
+ *   
  * Author: Maria H. Cristoforo
  * Created: Mon Feb 20 13:52:01 2023 (-0500)
  * Version: 1.0
@@ -17,7 +17,7 @@
 #include <hash.h>
 #include <queue.h>
 #include <indexio.h>
-
+ 
 static int min_count;
 static char *word_match;
 
@@ -41,9 +41,13 @@ char *strip_extra_spaces(char* str) {
 // function to check that all chars in string are alphanumeric and lowers all letters
 bool allalpha(char *str){
   for(int i = 0; str[i]; i++){
-    if(!isalpha(str[i])){
-      return false;
-    }
+		if (str[i] == '\n' && i==0){
+			str[0] = '\0';
+			return true;
+		}
+		else if (!isalpha(str[i])){
+			return false;
+		}
 		str[i] = tolower(str[i]);
 	}
 	return true;
@@ -93,15 +97,15 @@ int main(void){
 	int counter = 0;
 	
 
-	hashtable_t *h1 = indexload("../indexer/step2");
+	hashtable_t *h1 = indexload("../indexer/pages0");
 
 	while (true){
 		
 		counter = 0;
 		min_count = -1;
-		printf("\n>");
+		printf(">");
 		
-		if (fgets(str, sizeof(str), stdin) == NULL){  break; } // always checks if there is a ctrl-D, then breaks
+		if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D, then breaks
 
 		strip_extra_spaces(str); // remove extra spaces & tabs		
 
@@ -115,23 +119,27 @@ int main(void){
 				return 1;
 			}
 		}
-		
-		for (int i = 0; i < counter; i++){ // for loop to print all words
 
-			word_match = words_array[i];
-			// need to search hash for word to get word count
-			if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
-				happly(h1, print_word); // if present, print count
+		if (!(strlen(str) < 1)){
+			for (int i = 0; i < counter; i++){ // for loop to print all words
+				
+				word_match = words_array[i];
+				// need to search hash for word to get word count
+				if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
+					happly(h1, print_word); // if present, print count
+				}
+				else {
+					printf("%s:0 ", words_array[i]); // if not present, print count 0
+					min_count = 0;
+				}
+				words_array[i] = '\0'; //clearing the array at the end
 			}
-			else {
-				printf("%s:0 ", words_array[i]); // if not present, print count 0
-				min_count = 0;
-			}
-			str[i] = '\0'; //clearing the array at the end
+			printf("-- %i\n", min_count); // print min count
 		}
-		printf("-- %i", min_count); // print min count
+		str[0] = '\0';
 	}
 	
+		
 	happly(h1, close_wordcount);
   happly(h1, del_hash_word);
 	hclose(h1);

@@ -75,7 +75,7 @@ webpage_t *pageload(int id, char *dirname){
 	for (; ch != '\n'; ch = fgetc(fp), counter++){
 		url[counter] = ch;
 	}
-	url[counter-1] = '\0';
+	url[counter] = '\0';
 	
 	//fgets(url, 1000, fp);
   fgets(depth, 5, fp);                                                                                                    
@@ -92,7 +92,7 @@ webpage_t *pageload(int id, char *dirname){
 		html[counter] = ch;
 	}
 	html[counter-1] = '\0';
-
+	
 	//printf("html_len: %i, counter: %i ", int_html_len, counter);
 	
   webpage_t *newpage = webpage_new(url, int_depth, html); // need to copy over html                                       

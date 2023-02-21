@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+
+
 // funtion to remove spaces and tabs from string
 char *strip_extra_spaces(char* str) {
   int i, x;
@@ -33,10 +35,15 @@ char *strip_extra_spaces(char* str) {
 
 // function to check that all chars in string are alphanumeric and lowers all letters
 bool allalpha(char *str){
-  for(int i = 0; str[i]; i++){
-    if(!isalpha(str[i])){
+	for(int i = 0; str[i]; i++){
+		if (str[i] == '\n' && i==0){
+			str[0] = '\0';
+			return true;
+		}
+		else if (!isalpha(str[i])){
       return false;
     }
+		else 
 		str[i] = tolower(str[i]);
 	}
 	return true;
@@ -54,9 +61,9 @@ int main(void){
 	while (true){
 		
 		counter = 0;
-		printf("\n>");
+		printf(">");
 		
-		if (fgets(str, sizeof(str), stdin) == NULL){  break; } // always checks if there is a ctrl-D
+		if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D
 
 		strip_extra_spaces(str); // remove extra spaces & tabs		
 
@@ -70,11 +77,15 @@ int main(void){
 				return 1;
 			}
 		}
-		
-		for (int i = 0; i < counter; i++){ // for loop to print all elements
-			printf("%s ", words_array[i]);
-			str[i] = '\0'; //clearing the array at the end
+
+		if (!(counter < 2)){
+			for (int i = 0; i < counter; i++){ // for loop to print all elements
+				printf("%s ", words_array[i]);
+				words_array[i] = '\0'; //clearing the array at the end
+			}
+			printf("\n");
 		}
+		str[0] = '\0';
 	}
 	return 0;
 }

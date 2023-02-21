@@ -71,7 +71,7 @@ hashtable_t* indexload(char *filepath){
 
 	if((fp = fopen(filepath, "r")) == NULL){ printf("Could not open file\n"); return NULL;}
 	
-	char line[100];
+	char line[1000];
 
 	hashtable_t *h1 = hopen(1000); // open HASH table
  
@@ -100,6 +100,7 @@ hashtable_t* indexload(char *filepath){
 			sscanf(token2, "%d", &count);
 			
 			put_entry(word_struct->q, doc_id, count); // creates struct for QUEUE
+			//			printf("doc_id_ .h: %i\n", doc_id);
 		}
 		
 		hput(h1, (void *)word_struct, (void *)word_name, strlen(word_name));

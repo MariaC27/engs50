@@ -1,6 +1,6 @@
 /* query.c --- prompt to get query from user
- * 
- * 
+ *  
+ *   
  * Author: Maria H. Cristoforo
  * Created: Mon Feb 20 13:52:01 2023 (-0500)
  * Version: 1.0
@@ -8,18 +8,43 @@
  * Description: prompt to get query from user
  * 
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <hash.h>
-#include <queue.h>
-#include <indexio.h>
+
+#include <stdio.h>                                                                                                                
+#include <stdlib.h>                                                                                                               
+#include <stdint.h>                                                                                                               
+#include <string.h>                                                                                                               
+#include <stdbool.h>                                                                                                              
+#include <ctype.h>                                                                                                                
+#include <dirent.h>
+#include <webpage.h>                                                                                                              
+#include <hash.h>                                                                                                                 
+#include <queue.h>                                                                                                                
+#include <indexio.h>                                                                                                              
+#include <pageio.h> 
+
+
+#define MAX_WORDS 20
+
 
 static int min_count;
 static char *word_match;
+static int id_match;
+
+typedef struct doc_words{
+  int doc_id;
+	int rank;
+	webpage_t *page;
+} doc_words_t;
+
+int make_doc_struct(queue_t *queue_toput, int id, int mincount, webpage_t *webpage){
+	doc_words_t *q = malloc(sizeof(doc_words_t));
+  q->doc_id = id;
+	q->rank = mincount;
+	q->page = webpage;
+	
+	int result = qput(queue_toput, (void*)q);
+  return result;
+}     
 
 // funtion to remove spaces and tabs from string
 char *strip_extra_spaces(char* str) {
@@ -41,9 +66,13 @@ char *strip_extra_spaces(char* str) {
 // function to check that all chars in string are alphanumeric and lowers all letters
 bool allalpha(char *str){
   for(int i = 0; str[i]; i++){
-    if(!isalpha(str[i])){
-      return false;
-    }
+		if (str[i] == '\n' && i==0){
+			str[0] = '\0';
+			return true;
+		}
+		else if (!isalpha(str[i])){
+			return false;
+		}
 		str[i] = tolower(str[i]);
 	}
 	return true;
@@ -56,21 +85,6 @@ bool wordsearch(void* elementp, const void* searchkeyp){
 	return false;
 }    
 
-void print_word_count(void* data){
-  qentry_t* q = data;
-  printf("%d ", q->count);
-	if (q->count < min_count || min_count == -1)
-		min_count = q->count;
-}                                                                                                                                   
-                                                                                                                                    
-void print_word(void* data){ // get doc and counts
-  wordcount_t *tmp = data;
-	if (!strcmp(tmp->word_data, word_match)){
-		printf("%s:", tmp->word_data);
-		qapply(tmp->q, print_word_count);
-	}
-}
-
 void close_wordcount(void *w){
 	wordcount_t *wc = w;
 	qapply(wc->q, free);
@@ -81,27 +95,52 @@ void del_hash_word(void* data){ // this function tries to free up word_data poin
 	wordcount_t *tmp = data;
 	free(tmp->word_data);
 	free(tmp);
-}   
+}
 
+void close_doc_struct(void *data){
+	doc_words_t *q = data;
+	webpage_delete(q->page);
+}	
+
+void print_queue2(void* data){                                                                                                    
+  doc_words_t* q = data;                                                                                                          
+  printf("\nrank:%i:doc:%i:%s", q->rank, q->doc_id, webpage_getURL(q->page) );                                                    
+}    
+
+void calculate_rank(void* data){
+  qentry_t* q = data;
+	if ( q->id == id_match ){ // updates min_count (rank) by running through all words with doc #
+		if (q->count < min_count || min_count == -1){
+			min_count = q->count;
+		}	
+	}
+}                                                                                                                                   
+
+void calculate_rank_hash(void* data){ // get doc and counts
+  wordcount_t *tmp = data;
+	if (strcmp(tmp->word_data, word_match)==0){
+		qapply(tmp->q, calculate_rank);
+	}
+}
 
 int main(void){
-
+ 
 	char str[100];
 	char *token;
 	const char s[4] = " ";
-	char *words_array[20];
+	char *words_array[MAX_WORDS];
 	int counter = 0;
 	
 
-	hashtable_t *h1 = indexload("../indexer/step2");
-
+	hashtable_t *h1 = indexload("../indexer/pages3");
+	//	happly(h1, printhash);
+	
 	while (true){
 		
 		counter = 0;
-		min_count = -1;
-		printf("\n>");
+		printf(">");
 		
-		if (fgets(str, sizeof(str), stdin) == NULL){  break; } // always checks if there is a ctrl-D, then breaks
+		if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D, then breaks
 
 		strip_extra_spaces(str); // remove extra spaces & tabs		
 
@@ -115,23 +154,78 @@ int main(void){
 				return 1;
 			}
 		}
-		
-		for (int i = 0; i < counter; i++){ // for loop to print all words
 
-			word_match = words_array[i];
-			// need to search hash for word to get word count
-			if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
-				happly(h1, print_word); // if present, print count
-			}
-			else {
-				printf("%s:0 ", words_array[i]); // if not present, print count 0
-				min_count = 0;
-			}
-			str[i] = '\0'; //clearing the array at the end
+		// OUTPUT formatting to print query
+		if (!(strlen(str) < 1)){
+			for (int i = 0; i < counter; i++){ // for loop to print all words                                                             
+				printf("%s ", words_array[i]);                                                                                              
+			} 
 		}
-		printf("-- %i", min_count); // print min count
+
+		// Need to go through every document, and get rank for each and put into queue
+		// Check if directory exists
+		DIR *d;                                                                                                                         
+		struct dirent *dir;                                                                                                             
+		d = opendir("../pages/");                                                                                                           
+		if (!d){ printf("Failed to access directory"); exit(EXIT_FAILURE);}		
+
+
+		int doc_id = -1;                                                                                                                
+		webpage_t* page;                                                                                                                
+		queue_t *q1 = qopen();
+		
+		if (!(strlen(str) < 1)){
+			while ((dir = readdir(d)) != NULL) {
+				if ( doc_id > 0){                                                                                                             
+					page = pageload(doc_id, "../pages/");
+					
+					for (int i = 0; i < counter; i++){ // for loop to print all words
+						
+						word_match = words_array[i];
+						// need to search hash for word to get word count
+						if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
+							happly(h1, calculate_rank_hash); // if present, print count
+							if (min_count == -1)
+								min_count = 0;
+						}
+						else {
+							min_count = 0;
+						}
+					}
+					make_doc_struct(q1, doc_id, min_count, page);
+				}
+				doc_id++;
+				min_count = -1;
+				id_match = doc_id;
+			}	
+		}
+		
+		qapply(q1, print_queue2);
+		
+		if (!(strlen(str) < 1)){
+			for (int i = 0; i < counter; i++){ // for loop to print all words                                                             
+				words_array[i] = '\0';
+			}
+			printf("\n");
+		}
+		str[0] = '\0';
+
+		qapply(q1, close_doc_struct);
+		qclose(q1);
+
+		
+		/* VALGRIND
+DONE	     -->> Need to go through words_array and clear //words_array[i] = '\0'; //clearing the array at the end
+Done			 -->> Need to go through queue and free elements //free(qget(q1));
+Done			 -->> Need to webpage delete //webpage_delete(page);
+		*/
+		
+		
+
+								 
+
 	}
-	
+		
 	happly(h1, close_wordcount);
   happly(h1, del_hash_word);
 	hclose(h1);
