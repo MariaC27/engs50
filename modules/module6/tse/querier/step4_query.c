@@ -219,12 +219,13 @@ int main(void){
 					page = pageload(doc_id, "../pages/");
 					min_val_in_and_sequence = INT_MAX;
 					for (int i = 0; i < counter; i++){ // for loop to print all words
-						
+						min_count = -1;
 						word_match = words_array[i];
 						if(strcmp(word_match, "and") == 0)
 							continue;
 						if(strcmp(word_match, "or") != 0){
 							// need to search hash for word to get word count
+							
 							if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
 								happly(h1, calculate_rank_hash); // if present, print count, set global variable min_count to the minimum number of occurences of the word in the doc
 								if (min_count == -1)
