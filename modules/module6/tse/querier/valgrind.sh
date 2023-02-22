@@ -1,7 +1,7 @@
 #!/bin/bash
 
 files=(
-		querier
+		step3_val
 )
 
 echo "the files list is: ${files[*]}"
