@@ -17,6 +17,8 @@
 #include <ctype.h>
 #include <hash.h>
 #include <queue.h>
+#include <pageio.h>
+#include <indexio.h>
 
 
 static int word_total;
