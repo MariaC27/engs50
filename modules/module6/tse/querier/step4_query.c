@@ -70,20 +70,18 @@ bool valid_query_sequence(char* wordsarray[]){
 		return false;
 	}
 	
-	int i, j;
+	int i;
 
 	// check if "and" or "or" are consecutive anywhere in query
-  for (i = 0 ; i < sizeof(wordsarray); i++){
-		for (j = 0 ; j < sizeof(wordsarray); j++){
-			if (consecutive_and_or(wordsarray[i], wordsarray[j]){
-				return false;
-			}
-    }
+  for (i = 0 ; i < sizeof(wordsarray)-1; i++){
+		if (consecutive_and_or(wordsarray[i], wordsarray[i+1]){
+			return false;
+		}
   }
   return true;
 }
 
-bool consecutieve_and_or(char* word1, char* word2){
+bool consecutive_and_or(char* word1, char* word2){
 	if(strcmp(word1, "and") == 0){
 		if(strcmp(word2, "and") == 0 || strcmp(word2, "or") == 0){
 				return false;
