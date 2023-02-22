@@ -2,6 +2,9 @@ CFLAGS=-Wall -pedantic -std=c11 -I../utils/src -L../lib -g
 LIBS=-lutils -lcurl
 
 
+step4_querier: step4_query.c
+	gcc $(CFLAGS) step4_query.c $(LIBS) -o $@
+
 step3_querier: step3_query.c
 	gcc $(CFLAGS) step3_query.c $(LIBS) -o $@
 

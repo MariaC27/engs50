@@ -36,6 +36,8 @@ typedef struct doc_words{
 	webpage_t *page;
 } doc_words_t;
 
+
+//makes a doc struct AND puts it into the queue
 int make_doc_struct(queue_t *queue_toput, int id, int mincount, webpage_t *webpage){
 	doc_words_t *q = malloc(sizeof(doc_words_t));
   q->doc_id = id;

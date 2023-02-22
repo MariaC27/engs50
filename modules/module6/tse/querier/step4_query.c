@@ -63,37 +63,37 @@ char *strip_extra_spaces(char* str) {
 	return str;
 }
 
-bool valid_query_sequence(char* wordsarray[]){
 
-	//checks if "and" or "or" are at beginning or end of word sequence
-	if (wordsarray[0] == "and" || wordsarray[0] == "or" || wordsarray[sizeof(wordsarray)] == "and" || wordsarray[sizeof(wordsarray)] == "or"){
-		return false;
-	}
-	
-	int i;
 
-	// check if "and" or "or" are consecutive anywhere in query
-  for (i = 0 ; i < sizeof(wordsarray)-1; i++){
-		if (consecutive_and_or(wordsarray[i], wordsarray[i+1]){
+bool consecutive_and_or(char* word1, char* word2){
+	if(strcmp(word1, "and") == 0){
+    if(strcmp(word2, "and") == 0 || strcmp(word2, "or") == 0){
 			return false;
-		}
+    }
+  }
+  if (strcmp(word1, "or")==0){
+    if(strcmp(word2, "and") == 0 || strcmp(word2, "or") == 0){
+			return false;
+    }
   }
   return true;
 }
 
-bool consecutive_and_or(char* word1, char* word2){
-	if(strcmp(word1, "and") == 0){
-		if(strcmp(word2, "and") == 0 || strcmp(word2, "or") == 0){
-				return false;
-		}
+bool valid_query_sequence(char* wordsarray[], int len){
+	//checks if "and" or "or" are at beginning or end of word sequence
+	if ((strcmp(wordsarray[0], "and")==0 || strcmp(wordsarray[0], "or")==0) ||//if word array starts with "and" or "or"
+			(strcmp(wordsarray[len-1],"and")==0 || strcmp(wordsarray[len-1], "or")==0)){//if word array ends with "and" or "or"
+		return false;
 	}
-	if (strcmp(word1, "or")){
-		if(strcmp(word2, "and") == 0 || strcmp(word2, "or") == 0){
-				return false;
+	
+	int i;
+	// check if "and" or "or" are consecutive anywhere in query
+  for (i = 0 ; i < len-1; i++){
+		if (!consecutive_and_or(wordsarray[i], wordsarray[i+1])){
+			return false;
 		}
-	}
-
-	return true;
+  }
+  return true;
 }
 
 // function to check that all chars in string are alphanumeric and lowers all letters
@@ -195,6 +195,10 @@ int main(void){
 			} 
 		}
 
+		if(valid_query_sequence(words_array, counter)!=true){//if the query sequence is invalid based on the placement of keywords "and" and "or"
+			printf("invalid query, \"and\" and \"or\" sequence mishapen\n");
+			exit(EXIT_FAILURE);//exit failure
+		}
 		// Need to go through every document, and get rank for each and put into queue
 		// Check if directory exists
 		DIR *d;                                                                                                                         
@@ -206,31 +210,46 @@ int main(void){
 		int doc_id = -1;                                                                                                                
 		webpage_t* page;                                                                                                                
 		queue_t *q1 = qopen();
-		
+		int sum_of_ors;
+		int min_val_in_and_sequence;
 		if (!(strlen(str) < 1)){
 			while ((dir = readdir(d)) != NULL) {
+				sum_of_ors = 0;
 				if ( doc_id > 0){                                                                                                             
 					page = pageload(doc_id, "../pages/");
-					
+					min_val_in_and_sequence = INT_MAX;
 					for (int i = 0; i < counter; i++){ // for loop to print all words
 						
 						word_match = words_array[i];
-						// need to search hash for word to get word count
-						if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
-							happly(h1, calculate_rank_hash); // if present, print count
-							if (min_count == -1)
+						if(strcmp(word_match, "and") == 0)
+							continue;
+						if(strcmp(word_match, "or") != 0){
+							// need to search hash for word to get word count
+							if (hsearch(h1, wordsearch, (void *)words_array[i], strlen(words_array[i]))){ // search hash for word
+								happly(h1, calculate_rank_hash); // if present, print count, set global variable min_count to the minimum number of occurences of the word in the doc
+								if (min_count == -1)
+									min_count = 0;
+							}
+							else {
 								min_count = 0;
+							}
+							if(min_count < min_val_in_and_sequence){
+								min_val_in_and_sequence = min_count;
+							}
 						}
-						else {
-							min_count = 0;
+						else{
+							sum_of_ors += min_val_in_and_sequence;
+							min_val_in_and_sequence = INT_MAX;
 						}
 					}
-					make_doc_struct(q1, doc_id, min_count, page);
+					sum_of_ors += min_val_in_and_sequence;
+					//make_doc_struct(q1, doc_id, min_count, page);
+					make_doc_struct(q1, doc_id, sum_of_ors, page);
 				}
 				doc_id++;
 				min_count = -1;
 				id_match = doc_id;
-			}	
+			}
 		}
 		
 		qapply(q1, print_queue2);
