@@ -126,7 +126,8 @@ void calculate_rank_hash(void* data){ // get doc and counts
 
 int main(void){
  
-	char str[100];
+	char str[4] = "team";
+	printf("\nQuery Example: team\n");
 	char *token;
 	const char s[4] = " ";
 	char *words_array[MAX_WORDS];
@@ -134,14 +135,13 @@ int main(void){
 	
 
 	hashtable_t *h1 = indexload("../indexer/pages3");
-	//	happly(h1, printhash);
 	
-	while (true){
+	//	while (true){
 		
 		counter = 0;
-		printf(">");
+		//printf(">");
 		
-		if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D, then breaks
+		//if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D, then breaks
 
 		strip_extra_spaces(str); // remove extra spaces & tabs		
 
@@ -157,11 +157,11 @@ int main(void){
 		}
 
 		// OUTPUT formatting to print query
-		if (!(strlen(str) < 1)){
+		/*if (!(strlen(str) < 1)){
 			for (int i = 0; i < counter; i++){ // for loop to print all words                                                             
 				printf("%s ", words_array[i]);                                                                                              
 			} 
-		}
+			}*/
 
 		// Need to go through every document, and get rank for each and put into queue
 		// Check if directory exists
@@ -211,12 +211,13 @@ int main(void){
 		}
 		str[0] = '\0';
 
-		qapply(q1, close_doc_struct); // close queue and directory
+		qapply(q1, close_doc_struct);
 		qclose(q1);
 		closedir(d);
-	}
 		
-	happly(h1, close_wordcount); // close hashtable 
+		//	}
+		
+	happly(h1, close_wordcount);
   happly(h1, del_hash_word);
 	hclose(h1);
 	return 0;

@@ -11,5 +11,11 @@ step2_querier: step2_query.c
 step1_querier: step1_query.c
 	gcc $(CFLAGS) step1_query.c $(LIBS) -o $@
 
+step2_val: step2_val.c
+	gcc $(CFLAGS) step2_val.c $(LIBS) -o $@
+
+step3_val: step3_val.c
+	gcc $(CFLAGS) step3_val.c $(LIBS) -o $@
+
 
 
