@@ -1,7 +1,7 @@
 #!/bin/bash
 
 files=(
-		step3_val
+		step4_val
 )
 
 echo "the files list is: ${files[*]}"

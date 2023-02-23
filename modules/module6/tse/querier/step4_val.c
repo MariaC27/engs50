@@ -133,6 +133,7 @@ void del_hash_word(void* data){ // this function tries to free up word_data poin
 void close_doc_struct(void *data){
 	doc_words_t *q = data;
 	webpage_delete(q->page);
+	free(q);
 }	
 
 void print_queue2(void* data){                                                                                                    
@@ -156,35 +157,14 @@ void calculate_rank_hash(void* data){ // get doc and counts
 	}
 }
 
-int main(int argc, char *argv[]){
-	if(argc > 6 || argc < 3){
-		printf("invalid number of arguments. Usage: query <pageDirectory> <indexFile> [-q]");
-		exit(EXIT_FAILURE);
-	}
+int main(void){
 
-	char *page_directory = argv[1];
-	char *indexFile = argv[2];
+	char *page_directory = "../pages/";
+	char *indexFile = "../indexer/pages3";
+
 	
-	FILE *query_readfile;
-	FILE *doc_out;
-	char *query_readfile_path;
-	char *doc_out_path;
-	int q = 1;
-	if(argc >3){
-		if(strcmp(argv[3], "-q")==0){
-			char *query_readfile_path = argv[4];
-			char *doc_out_path = argv[5];
-			query_readfile = fopen(query_readfile_path, "r");
-			doc_out = fopen(doc_out_path, "w");
-			q = 0;
-		}
-		else{
-			printf("Usage: query <pageDirectory> <indexFile> [-q]");
-			exit(EXIT_FAILURE);
-		}
-	}
-	
-	char str[100];
+	char str[4] = "team";
+	printf("\n\nQuery Example: team\n");
 	char *token;
 	const char s[4] = " ";
 	char *words_array[MAX_WORDS];
@@ -195,12 +175,13 @@ int main(int argc, char *argv[]){
 	hashtable_t *h1 = indexload(indexFile);
 	//	happly(h1, printhash);
 
-	int end = 1;
-	while (end == 1){
+	//int end = 1;
+	//while (end == 1){
 		counter = 0;
-		printf(">");
-		if(q ==1){
+		//printf(">");
+		/*if(q ==1){
 			if (fgets(str, sizeof(str), stdin) == NULL){ printf("\n"); break; } // always checks if there is a ctrl-D, then breaks
+			printf("good");
 		}
 		else{
 			char ch = fgetc(query_readfile);
@@ -212,30 +193,27 @@ int main(int argc, char *argv[]){
 				}
 				str[ctr] = ch;
 			}
-			str[ctr] = '\n';
-			ctr++;
 			str[ctr] = '\0';
-		}
+			}*/
+			strip_extra_spaces(str); // remove extra spaces & tabs		
+			
+			for (token=strtok(str, s); token!=0; token = strtok(0, s)) {
+				if (allalpha(token)){
+					words_array[counter] = token;
+					counter++;
+				}
+				else{
+					printf("invalid query\n");
+					return 1;
+				}
+			}
 
-		strip_extra_spaces(str); // remove extra spaces & tabs		
-		
-		for (token=strtok(str, s); token!=0; token = strtok(0, s)) {
-			if (allalpha(token)){
-				words_array[counter] = token;
-				counter++;
-			}
-			else{
-				printf("invalid query\n");
-				return 1;
-			}
-		}
-		
 		// OUTPUT formatting to print query
-		if (!(strlen(str) < 1)){
+		/*if (!(strlen(str) < 1)){
 			for (int i = 0; i < counter; i++){ // for loop to print all words                                                             
 				printf("%s ", words_array[i]);                                                                                              
 			} 
-		}
+			}*/
 
 		if(valid_query_sequence(words_array, counter)!=true){//if the query sequence is invalid based on the placement of keywords "and" and "or"
 			printf("invalid query, \"and\" and \"or\" sequence mishapen\n");
@@ -296,7 +274,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 		
-		qapply(q1, print_queue2);
+		//qapply(q1, print_queue2);
 		
 		if (!(strlen(str) < 1)){
 			for (int i = 0; i < counter; i++){ // for loop to print all words                                                             
@@ -308,18 +286,10 @@ int main(int argc, char *argv[]){
 
 		qapply(q1, close_doc_struct);
 		qclose(q1);
+		closedir(d);
 
 		
-		/* VALGRIND
-DONE	     -->> Need to go through words_array and clear //words_array[i] = '\0'; //clearing the array at the end
-Done			 -->> Need to go through queue and free elements //free(qget(q1));
-Done			 -->> Need to webpage delete //webpage_delete(page);
-		*/
-	}
-	if(q == 0){
-		fclose(query_readfile);
-		fclose(doc_out);
-	}
+
 	happly(h1, close_wordcount);
   happly(h1, del_hash_word);
 	hclose(h1);
