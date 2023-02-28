@@ -1,5 +1,5 @@
 CFLAGS = -Wall -pedantic -std=c17 -I. -g
-OFILES = queue.o hash.o webpage.o pageio.o indexio.o
+OFILES = queue.o hash.o webpage.o pageio.o indexio.o lqueue.o lhash.o
 
 all: $(OFILES)
 	ar cr ../../lib/libutils.a $(OFILES)
@@ -14,9 +14,9 @@ pageio: ../src/pageio.c
 	gcc ${CLFAGS} ../src/pageio.c -c
 indexio: ../src/indexio.c
 	gcc ${CFLAGS} ../src/indexio.c -c
-lqueue: ../src/lqueue.c
+lqueue: ../src/lqueue.c ../src/queue.c
 	gcc ${CFLAGS} ../src/lqueue.c -c
-lhash: ../src/lhash.c ../src/queue.c
+lhash: ../src/lhash.c ../src/queue.c ../src/hash.c
 	gcc ${CFLAGS} ../src/lhash.c -c
 
 clean:

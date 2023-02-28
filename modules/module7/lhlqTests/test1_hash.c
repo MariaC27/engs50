@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//#include "hash.h"
 #include "lhash.h"
 #include "queue.h"
 

@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "hash.h"
 #include "queue.h"
 #include "lhash.h"
 #include <pthread.h>
@@ -24,126 +25,34 @@ void delay(int number_of_seconds){
 }
 
 
-/* 
- * SuperFastHash() -- produces a number between 0 and the tablesize-1.
- * 
- * The following (rather complicated) code, has been taken from Paul
- * Hsieh's website under the terms of the BSD license. It's a hash
- * function used all over the place nowadays, including Google Sparse
- * Hash.
- */
-
-#define MAXTABLESIZE 1000
-#define get16bits(d) (*((const uint16_t *) (d)))
-
-static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
-  uint32_t hash = len, tmp;
-  int rem;
-
-  if (len <= 0 || data == NULL)
-    return 0;
-  rem = len & 3;
-  len >>= 2;
-  /* Main loop */
-  for (;len > 0; len--) {
-    hash  += get16bits (data);
-    tmp    = (get16bits (data+2) << 11) ^ hash;
-    hash   = (hash << 16) ^ tmp;
-    data  += 2*sizeof (uint16_t);
-    hash  += hash >> 11;
-  }
-  /* Handle end cases */
-  switch (rem) {
-  case 3: hash += get16bits (data);
-    hash ^= hash << 16;
-    hash ^= data[sizeof (uint16_t)] << 18;
-    hash += hash >> 11;
-    break;
-  case 2: hash += get16bits (data);
-    hash ^= hash << 11;
-    hash += hash >> 17;
-    break;
-  case 1: hash += *data;
-    hash ^= hash << 10;
-    hash += hash >> 1;
-  }
-  /* Force "avalanching" of final 127 bits */
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash % tablesize;
-}
-
-struct lhashtable_t{
-	queue_t *table[MAXTABLESIZE];
-	uint32_t size;
-};
-
 //open a new table with size hsize
-lhashtable_t *lhopen(uint32_t hsize){
-	
-	if(hsize > MAXTABLESIZE){
-		printf("Table size too large. Max size is %i\n\n", MAXTABLESIZE);
-		return NULL;
-	}
-
-	struct lhashtable_t *hasher = (struct lhashtable_t*)malloc(sizeof(struct lhashtable_t));
-	hasher->size = hsize;
-	for(int i = 0; i < hsize; i++){
-		hasher->table[i] = qopen();
-	}
-
+hashtable_t *lhopen(uint32_t hsize){
 	// Create mutex
   pthread_mutex_init(&m, NULL);
-	
-	return hasher;
+	return hopen(hsize);;
 }
 
 //close all of the chains in the hash table that is pointed to by htb
-void lhclose(lhashtable_t *lhtp){
-	struct lhashtable_t* h = lhtp;
-
+void lhclose(hashtable_t *lhtp){
 	pthread_mutex_lock(&m);
-	
-	for(int i = 0; i < h->size; i++){
-		qclose(h->table[i]);
-	}
-
-	// destroy mutex
+	hclose(lhtp);
 	pthread_mutex_unlock(&m);
 	pthread_mutex_destroy(&m);
-	free(h);
 }
 
 
 //put node ep into hashtable pointed to by htp with key key and key length keylen
-int32_t lhput(lhashtable_t *lhtp, void *ep, const char *key, int keylen){
-	struct lhashtable_t* h = lhtp;
-
+int32_t lhput(hashtable_t *lhtp, void *ep, const char *key, int keylen){
 	pthread_mutex_lock(&m);
-	
-	uint32_t table_position = SuperFastHash(key, keylen, h->size);
-	qput(h->table[table_position], (struct Node *)ep);
-
+	hput(lhtp, ep, key, keylen);
 	pthread_mutex_unlock(&m);
-	
 	return 0;
 }
 
-
-
 /* happly -- applies a function to every entry in hash table */
-void lhapply(lhashtable_t *lhtp, void (*fn)(void* ep)){
-	struct lhashtable_t* h = lhtp;
-
+void lhapply(hashtable_t *lhtp, void (*fn)(void* ep)){
 	pthread_mutex_lock(&m);
-	
-	for(int i = 0; i < h->size; i++){
-		qapply(h->table[i], fn);
-	}
+	happly(lhtp, fn);
 	pthread_mutex_unlock(&m);
 }
 
@@ -151,32 +60,16 @@ void lhapply(lhashtable_t *lhtp, void (*fn)(void* ep)){
  * designated search fn -- returns a pointer to the entry or NULL if
  * not found
  */
-void *lhsearch(lhashtable_t *lhtp,
-        bool (*searchfn)(void* elementp, const void* searchkeyp),
-        const char *key,
-							int32_t keylen){
-	struct lhashtable_t* h = lhtp;
-
-	pthread_mutex_lock(&m);
-	
-	uint32_t table_position = SuperFastHash(key, keylen, h->size);
-	void *n = qsearch(h->table[table_position], searchfn, key);
-
-	pthread_mutex_unlock(&m);
-	
+void *lhsearch(hashtable_t *lhtp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen){
+	//pthread_mutex_lock(&m);
+	void *n = hsearch(lhtp, searchfn, key, keylen);
+	//pthread_mutex_unlock(&m);
 	return n;
 }
 
-void *lhremove(lhashtable_t *lhtp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen){
-  struct lhashtable_t* h = lhtp;
-
+void *lhremove(hashtable_t *lhtp, bool (*searchfn)(void* elementp, const void* searchkeyp), const char *key, int32_t keylen){
 	pthread_mutex_lock(&m);
-	
-  uint32_t table_position = SuperFastHash(key, keylen, h->size);
-  queue_t* qp = h->table[table_position];
-  void* n = qremove(qp, searchfn, (const void *)key);
-
+	void* n = hremove(lhtp, searchfn, key, keylen);
 	pthread_mutex_unlock(&m);
-	
 	return n;
 }

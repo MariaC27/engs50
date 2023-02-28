@@ -5,7 +5,6 @@
  * Description: Locked Queue data structure created with linked list approach 
  */
 
-#include "queue.h"
 #include "lqueue.h"
 #include <stdio.h>
 #include <time.h>
@@ -15,6 +14,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <pthread.h>
+
+
 
 
 pthread_mutex_t m;
@@ -44,43 +45,106 @@ void delay(int number_of_seconds){
 
 /* create an empty queue */
 lqueue_t* lqopen(void) { // Open Queue without nodes
+	struct lqueue_t* tmp = (struct lqueue_t*)malloc(sizeof(struct lqueue_t));
+	tmp->front = NULL;
+	tmp->back = NULL;
+
+	// Create mutex
 	pthread_mutex_init(&m, NULL);
-	return qopen();
+
+	return tmp;
 }
 
 /* deallocate a queue, frees everything in it */
 void lqclose(lqueue_t *lqp) { // deallocate queue
+	struct lqueue_t* q = lqp;
+
 	pthread_mutex_lock(&m);
-	qclose(lqp);
+	
+	for (Node_t* current=q->front; current!=NULL;){
+		Node_t* tmp = current->next;
+		free(current);
+		current = tmp;
+	}
+	// Destroy mutex
 	pthread_mutex_unlock(&m);
 	pthread_mutex_destroy(&m);
+	
+	free(q);
 }
 
 /* put element at the end of the queue*/
 int32_t lqput(lqueue_t *lqp, void *elementp){ 
+	struct lqueue_t* q = lqp;
+
+	// Lock and Unlock mutex
 	pthread_mutex_lock(&m);
-	qput(lqp, elementp);
+	
+	if (q->front == NULL) { 	// adding to empty queue
+		q->front = (struct Node *)malloc(sizeof(Node_t));	// space
+		q->front->data = (struct Node *)elementp;			// add elements to node
+		q->front->next = NULL; 	// no next node
+		q->back = q->front; 	// no next node
+	}
+	else { 						// adding to non-empty queue
+		q->back->next = (struct Node *)malloc(sizeof(Node_t)); 
+		q->back->next->data = (struct Node *)elementp; 			
+        q->back->next->next = NULL;
+        q->back = q->back->next;
+	}
+	
+	if (q->front == NULL){ // fail if queue is still empty
+		pthread_mutex_unlock(&m);
+		return 1;
+	}
 	pthread_mutex_unlock(&m);
 	return 0;
 }
 
 /* get the first element from queue, removing it from the queue*/
 void* lqget(lqueue_t *lqp){
+	struct lqueue_t *q = lqp;
+
 	pthread_mutex_lock(&m);
-	void *elem = qget(lqp);
+
+	if (q->front == NULL) // if empty queue
+		return NULL;
+	Node_t* tmp = q->front;
+	void* elem = tmp->data;
+	q->front = tmp->next;
+	free(tmp);
+
 	pthread_mutex_unlock(&m);
+	
 	return elem;
 }
 /* apply a function to every element of the queue */
 void lqapply(lqueue_t *lqp, void (*fn)(void* elementp)){
+	struct lqueue_t *q = lqp;
+	
 	pthread_mutex_lock(&m);
-	qapply(lqp, fn);
+
+	//delay(2000); // for testing purposes
+	
+	for (Node_t* current=q->front; current!=NULL;current=current->next){
+		fn(current->data);
+	}
 	pthread_mutex_unlock(&m);
 }
 
 void* lqsearch(lqueue_t *lqp, bool (*searchfn)(void* elementp,const void* keyp), const void* skeyp){
-	//pthread_mutex_lock(&m);
-	void *ret = qsearch(lqp, searchfn, skeyp);
-	//pthread_mutex_unlock(&m);
-	return ret; // if not found
+	struct lqueue_t *q = lqp;
+
+	pthread_mutex_lock(&m);
+
+	for (Node_t* current=q->front; current!=NULL;current=current->next){
+		if (searchfn(current->data, skeyp)){
+			pthread_mutex_unlock(&m);
+			return (void *)current->data; // if found
+		}
+	}
+
+	pthread_mutex_unlock(&m);
+	
+	return NULL; // if not found
 }
